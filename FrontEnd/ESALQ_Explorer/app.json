@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "shelfieapp",
     "name": "ESALQ_Explorer",
     "slug": "ESALQ_Explorer",
     "version": "1.0.0",
