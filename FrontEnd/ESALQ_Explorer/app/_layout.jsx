@@ -9,14 +9,16 @@ const RootLayout = () => {
 
   return (
     <>
-      <StatusBar value = "auto"/>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'}/>
       <Stack screenOptions = {{ 
         headerStyle: { backgroundColor: theme.navBackground}, 
         headerTintColor: theme.title, 
       }}>
-        <Stack.Screen name = "index" options = {{ title: 'Home', headerBackVisible: false }}/>
-        <Stack.Screen name = "about" options = {{ title: 'About' }}/>
-        <Stack.Screen name = "contact" options = {{ title: 'Contact' }}/>
+        <Stack.Screen name = "index" options = {{ title: 'Home', headerBackVisible: false , headerShown: false}}/>
+        <Stack.Screen name = "login_educador" options = {{ title: 'Login Educador' }}/>
+        <Stack.Screen name = "login_explorador" options = {{ title: 'Login Explorador' }}/>
+        <Stack.Screen name = "registro_educador" options = {{ title: 'Crie sua conta' }}/>
+        <Stack.Screen name = "registro_explorador" options = {{ title: 'Crie sua conta' }}/>
       </Stack>
     </>
     

@@ -1,35 +1,25 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Pressable} from 'react-native'
 import { Link } from 'expo-router'
-
-import Logo from '../assets/favicon.png'
 
 const Home = () => {
   return (
-    <View style = {styles.container}>
-      <Image source = {Logo} style = {styles.img} />
+    <View style={styles.container}>
+      <Text style={styles.title}>ESALQ Explorer</Text>
+      <Text style={styles.subtitle}>Seja bem-vindo!</Text>
 
-      <Text style = {styles.title}>
-        The Number 1
-      </Text>
+      <View style={styles.buttonContainer}>
+        <Link href="/login_explorador" asChild>
+          <Pressable style={styles.button}>
+            <Text style={styles.buttonText}>Entre como Explorador</Text>
+          </Pressable>
+        </Link>
 
-      <Text style = {{ marginTop: 10, marginBottom: 30}}>
-        Reading List App
-      </Text>
-
-      <View style = {styles.card}>
-        <Text>
-          Hello, this is a card.
-        </Text>
+        <Link href="/login_educador" asChild>
+          <Pressable style={styles.button}>
+            <Text style={styles.buttonText}>Entre como Educador</Text>
+          </Pressable>
+        </Link>
       </View>
-
-      <Link href = "/about" style = {styles.link}>
-        About Page
-      </Link>
-
-      <Link href = "/contact" style = {styles.link}>
-        Contact Page
-      </Link>
-
     </View>
   )
 }
@@ -37,30 +27,37 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-
-    title: {
-      fontWeight: 'bold',
-      fontSize: 18
-    },
-
-    card: {
-      backgroundColor: '#eee',
-      padding: 20,
-      borderRadius: 5,
-      boxShadow: '4px 4px rgba(0,0,0,0.3)'
-    },
-
-    img: {
-      marginVertical: 20,
-    },
-
-    link: {
-      marginVertical: 10,
-      borderBottomWidth: 1
-    }
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2e7d32',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 22,
+    color: '#63a355',
+    marginBottom: 40,
+  },
+  buttonContainer: {
+    width: '100%',
+    gap: 20,
+  },
+  button: {
+    backgroundColor: '#2e7d32',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 })
