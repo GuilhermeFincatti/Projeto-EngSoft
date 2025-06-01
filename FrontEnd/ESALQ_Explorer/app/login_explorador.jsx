@@ -70,17 +70,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily: 'Montserrat-ExtraBold',
     color: '#2e7d32',
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 18,
+    fontFamily: 'Montserrat-Regular',
     color: '#555',
     marginBottom: 10,
   },
   loginText: {
     fontSize: 20,
+    fontFamily: 'Montserrat-Regular',
     fontWeight: '600',
     marginBottom: 20,
     color: '#333',
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     marginBottom: 15,
-    backgroundColor: '#fff', // Importante para não ficar cinza
+    backgroundColor: '#fff',
   },
   loginButton: {
     backgroundColor: '#2e7d32',
@@ -123,13 +125,14 @@ const styles = StyleSheet.create({
   },
   footerText: {
     color: '#555',
+    fontFamily: 'Montserrat-Regular',
   },
   footerLink: {
     color: '#2e7d32',
     fontWeight: '600',
   },
   createAccountButton: {
-    backgroundColor: '#e0f2f1', // Verde claro para destacar, mas suave
+    backgroundColor: '#e0f2f1',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
