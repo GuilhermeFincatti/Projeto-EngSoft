@@ -1,0 +1,21 @@
+from .supabase_client import supabase
+
+def login_user(nickname: str, password: str):
+    # Busca o e-mail correspondente ao nickname
+    result = supabase.table("Pessoa").select("Email").eq("Nickname", nickname).single().execute()
+
+    if not result.data:
+        raise Exception("Nickname não encontrado")
+
+    email = result.data["Email"]
+
+    # Faz login com email e senha
+    session_response = supabase.auth.sign_in_with_password({
+        "email": email,
+        "password": password
+    })
+
+    if not session_response.session:
+        raise Exception("Falha no login")
+
+    return session_response
