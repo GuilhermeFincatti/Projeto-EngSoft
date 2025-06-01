@@ -72,12 +72,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily: 'Montserrat-Bold',
     color: '#2e7d32',
     marginBottom: 4,
   },
   loginText: {
     fontSize: 20,
+    fontFamily: 'Montserrat-Regular',
     fontWeight: '600',
     marginBottom: 30,
     color: '#333',

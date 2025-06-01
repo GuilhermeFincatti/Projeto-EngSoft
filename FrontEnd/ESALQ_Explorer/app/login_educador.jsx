@@ -3,7 +3,7 @@ import { TextInput, Button, Provider as PaperProvider } from 'react-native-paper
 import { useState } from 'react'
 import { Link } from 'expo-router'
 
-const login_educador = () => {
+const login_explorador = () => {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
 
@@ -58,7 +58,7 @@ const login_educador = () => {
   )
 }
 
-export default login_educador
+export default login_explorador
 
 const styles = StyleSheet.create({
   container: {
@@ -70,17 +70,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily: 'Montserrat-ExtraBold',
     color: '#2e7d32',
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 18,
+    fontFamily: 'Montserrat-Regular',
     color: '#555',
     marginBottom: 10,
   },
   loginText: {
     fontSize: 20,
+    fontFamily: 'Montserrat-Regular',
     fontWeight: '600',
     marginBottom: 20,
     color: '#333',
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     color: '#555',
+    fontFamily: 'Montserrat-Regular',
   },
   footerLink: {
     color: '#2e7d32',

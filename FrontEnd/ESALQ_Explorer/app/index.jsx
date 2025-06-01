@@ -1,23 +1,34 @@
-import { StyleSheet, Text, View, Pressable} from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native'
 import { Link } from 'expo-router'
 
 const Home = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>ESALQ Explorer</Text>
+      <Image
+        source={require('../assets/Logo_ESALQ_Explorer_Sem_Texto.png')} // Substitua pelo caminho correto da sua imagem
+        style={styles.logo}
+        resizeMode="center" // Ou 'cover', 'stretch', 'repeat', 'center'
+      />
+
+      <Image
+        source={require('../assets/Logo_ESALQ_Explorer_Texto.png')} // Substitua pelo caminho correto da sua imagem
+        style={styles.textoLogo}
+        resizeMode="center" // Ou 'cover', 'stretch', 'repeat', 'center'
+      /> 
+
       <Text style={styles.subtitle}>Seja bem-vindo!</Text>
 
       <View style={styles.buttonContainer}>
         <Link href="/login_explorador" asChild>
-          <Pressable style={styles.button}>
+          <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Entre como Explorador</Text>
-          </Pressable>
+          </TouchableOpacity>
         </Link>
 
         <Link href="/login_educador" asChild>
-          <Pressable style={styles.button}>
+          <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Entre como Educador</Text>
-          </Pressable>
+          </TouchableOpacity>
         </Link>
       </View>
     </View>
@@ -34,6 +45,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
+  logo: {
+    width: 200, 
+    height: 150,
+    transform: [
+      { translateX: 5 } // Move a imagem 15 pixels para a ESQUERDA.
+    ],
+  },
+  textoLogo: {
+    width: 150,
+    height: 70,
+    marginBottom: 10,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -42,6 +65,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 22,
+    fontFamily: 'Montserrat-Bold',
     color: '#63a355',
     marginBottom: 40,
   },
