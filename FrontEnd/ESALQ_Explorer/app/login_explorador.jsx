@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { TextInput, Button, Provider as PaperProvider } from 'react-native-paper'
+import { BACKEND_URL } from '../constants/api'
 import { useState } from 'react'
 import { Link, useRouter } from 'expo-router'
 
@@ -16,7 +17,7 @@ const login_explorador = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.145.63:8000/login', { // URL do backend
+      const response = await fetch(`${BACKEND_URL}/login`, { // URL do backend
         // Substitua pelo IP do seu backend
         // Certifique-se de que o backend está rodando e acessível
         method: 'POST',

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, View, Pressable, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { BACKEND_URL } from '../constants/api'
 import { useRouter } from 'expo-router'
 
 const registro_educador = () => {
@@ -16,7 +17,7 @@ const registro_educador = () => {
     }
 
     try { 
-      const response = await fetch('http://192.168.145.63:8000/register', { // URL do backend
+      const response = await fetch(`${BACKEND_URL}/register`, { // URL do backend
         // Substitua pelo IP do seu backend
         // Certifique-se de que o backend está rodando e acessível
         method: 'POST',
