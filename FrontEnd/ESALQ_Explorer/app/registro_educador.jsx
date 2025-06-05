@@ -6,14 +6,17 @@ const registro_educador = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleRegister = async () => {
+  const handleRegister = async () => { // Função para lidar com o registro
+    // Verifica se os campos estão preenchidos
     if (!username || !email || !password) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.')
       return
     }
 
     try { 
-      const response = await fetch('http://192.168.145.63:8000/register', {
+      const response = await fetch('http://192.168.145.63:8000/register', { // URL do backend
+        // Substitua pelo IP do seu backend
+        // Certifique-se de que o backend está rodando e acessível
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,23 +31,23 @@ const registro_educador = () => {
 
       const data = await response.json()
 
-      if (response.ok) {
+      if (response.ok) { // Caso de sucesso
         Alert.alert('Sucesso', 'Registro concluído com sucesso!')
         console.log('Dados do usuário:', data)
         // Aqui você pode navegar para outra página, por exemplo:
         // router.push('/login_explorador')
-      } else {
+      } else { // Caso de erro
         console.error('Erro no registro:', data)
         Alert.alert('Erro no registro. Tente novamente mais tarde.')
       }
-    } catch (error) {
+    } catch (error) { // Captura erros de rede ou outros problemas
       console.error('Erro na requisição:', error)
       Alert.alert('Erro', 'Não foi possível conectar ao servidor.')
     }
   }
 
   return (
-    <KeyboardAvoidingView
+    <KeyboardAvoidingView // Componente para evitar que o teclado cubra os campos de entrada
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // Ajuste se necessário
@@ -53,7 +56,7 @@ const registro_educador = () => {
         <Text style={styles.title}>ESALQ Explorer</Text>
         <Text style={styles.loginText}>Crie sua conta de Educador</Text>
 
-        <TextInput
+        <TextInput // Componente de entrada de texto para o nome de usuário
           style={styles.input}
           placeholder="Nome de usuário"
           value={username}
@@ -62,7 +65,7 @@ const registro_educador = () => {
           autoCorrect={false}
         />
 
-        <TextInput
+        <TextInput // Componente de entrada de texto para o e-mail
           style={styles.input}
           placeholder="E-mail"
           value={email}
@@ -72,7 +75,7 @@ const registro_educador = () => {
           autoCorrect={false}
         />
 
-        <TextInput
+        <TextInput // Componente de entrada de texto para a senha
           style={styles.input}
           placeholder="Senha"
           value={password}

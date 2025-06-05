@@ -1,21 +1,24 @@
 import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { TextInput, Button, Provider as PaperProvider } from 'react-native-paper'
 import { useState } from 'react'
-import { Link, useRouter } from 'expo-router' // Adicione useRouter
+import { Link, useRouter } from 'expo-router'
 
 const login_explorador = () => {
   const [nickname, setNickname] = useState('')
   const [senha, setSenha] = useState('')
-  const router = useRouter() // Inicialize o hook
+  const router = useRouter() // Inicializando o hook para redirecionar após login
 
-  const handleLogin = async () => {
+  const handleLogin = async () => { // Função para lidar com o login
+    // Verifica se os campos estão preenchidos
     if (!nickname || !senha) {
       Alert.alert('Erro', 'Preencha todos os campos.')
       return
     }
 
     try {
-      const response = await fetch('http://192.168.145.63:8000/login', {
+      const response = await fetch('http://192.168.145.63:8000/login', { // URL do backend
+        // Substitua pelo IP do seu backend
+        // Certifique-se de que o backend está rodando e acessível
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -25,13 +28,16 @@ const login_explorador = () => {
       })
 
       const data = await response.json()
-      if (response.ok) {
+      if (response.ok) { // Caso de sucesso
         // Alert.alert('Sucesso', 'Login realizado com sucesso!')
         router.replace('/home') // Redireciona para a home
-      } else {
+      } else { // Caso de erro
+        // Exibe o erro retornado pelo backend
+        console.error('Erro ao fazer login:', data)
+        console.log(data)
         Alert.alert('Erro', JSON.stringify(data));
       }
-    } catch (error) {
+    } catch (error) { // Captura erros de rede ou outros problemas
       Alert.alert('Erro', 'Não foi possível conectar ao servidor.')
     }
   }
@@ -43,7 +49,7 @@ const login_explorador = () => {
         <Text style={styles.subtitle}>Seja bem-vindo!</Text>
         <Text style={styles.loginText}>Efetue seu Login</Text>
 
-        <TextInput
+        <TextInput // Componente de entrada de texto para o usuário
           label="Usuário"
           value={nickname}
           onChangeText={setNickname}
@@ -53,7 +59,7 @@ const login_explorador = () => {
           activeOutlineColor="#2e7d32"
         />
 
-        <TextInput
+        <TextInput // Componente de entrada de texto para a senha
           label="Senha"
           value={senha}
           onChangeText={setSenha}

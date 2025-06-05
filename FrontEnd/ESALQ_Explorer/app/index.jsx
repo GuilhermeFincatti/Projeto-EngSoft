@@ -5,16 +5,16 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/Logo_ESALQ_Explorer_Sem_Texto.png')} // Substitua pelo caminho correto da sua imagem
+        source={require('../assets/Logo_ESALQ_Explorer_Sem_Texto.png')} // Logo do ESALQ Explorer
         style={styles.logo}
         resizeMode="center" // Ou 'cover', 'stretch', 'repeat', 'center'
       />
 
       <Image
-        source={require('../assets/Logo_ESALQ_Explorer_Texto.png')} // Substitua pelo caminho correto da sua imagem
+        source={require('../assets/Logo_ESALQ_Explorer_Texto.png')} // Texto que acompanha a logo
         style={styles.textoLogo}
         resizeMode="center" // Ou 'cover', 'stretch', 'repeat', 'center'
-      /> 
+      />
 
       <Text style={styles.subtitle}>Seja bem-vindo!</Text>
 
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     width: 200, 
     height: 150,
     transform: [
-      { translateX: 5 } // Move a imagem 15 pixels para a ESQUERDA.
+      { translateX: 5 } // Move a imagem 5 pixels para a ESQUERDA.
     ],
   },
   textoLogo: {
