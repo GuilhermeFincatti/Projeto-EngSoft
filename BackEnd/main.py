@@ -46,8 +46,11 @@ def register(data: RegisterRequest):
 @app.post("/login")
 def login(data: LoginRequest):
     try:
-        session = login_user(data.nickname, data.password)
-        return {"access_token": session.access_token, "user": session.user}
+        session_response = login_user(data.nickname, data.password)
+        return {
+            "access_token": session_response.session.access_token,
+            "user": session_response.user
+        }
     except Exception as e:
         raise HTTPException(status_code=401, detail=str(e))
 

@@ -6,12 +6,41 @@ const registro_explorador = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!username || !email || !password) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.')
       return
     }
-    Alert.alert('Sucesso', `Usuário ${username} registrado!`)
+
+    try { 
+      const response = await fetch('http://192.168.145.63:8000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nickname: username,
+          email: email,
+          password: password,
+          tipo: 'explorador' // ou 'educador' dependendo do cadastro
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        Alert.alert('Sucesso', 'Registro concluído com sucesso!')
+        console.log('Dados do usuário:', data)
+        // Aqui você pode navegar para outra página, por exemplo:
+        // router.push('/login_explorador')
+      } else {
+        console.error('Erro no registro:', data)
+        Alert.alert('Erro no registro. Tente novamente mais tarde.')
+      }
+    } catch (error) {
+      console.error('Erro na requisição:', error)
+      Alert.alert('Erro', 'Não foi possível conectar ao servidor.')
+    }
   }
 
   return (
@@ -51,7 +80,13 @@ const registro_explorador = () => {
           secureTextEntry
         />
 
-        <Pressable style={styles.registerButton} onPress={handleRegister}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.registerButton,
+            pressed && { opacity: 0.6 }, // Efeito de opacidade quando pressionado
+          ]}
+          onPress={handleRegister}
+        >
           <Text style={styles.registerButtonText}>Registrar</Text>
         </Pressable>
       </ScrollView>
