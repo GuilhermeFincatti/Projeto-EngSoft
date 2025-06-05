@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, View, Pressable, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { useRouter } from 'expo-router'
 
 const registro_explorador = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const router = useRouter() // Inicializando o hook para redirecionar após login
 
   const handleRegister = async () => { // Função para lidar com o registro
     // Verifica se os campos estão preenchidos
@@ -34,8 +36,7 @@ const registro_explorador = () => {
       if (response.ok) { // Caso de sucesso
         Alert.alert('Sucesso', 'Registro concluído com sucesso!')
         console.log('Dados do usuário:', data)
-        // Aqui você pode navegar para outra página, por exemplo:
-        // router.push('/login_explorador')
+        router.push('/login_explorador') // Redireciona para a página de login do explorador
       } else { // Caso de erro
         // Exibe o erro retornado pelo backend
         console.error('Erro no registro:', data)

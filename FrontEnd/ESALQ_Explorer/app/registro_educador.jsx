@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, View, Pressable, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { useRouter } from 'expo-router'
 
 const registro_educador = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const router = useRouter() // Inicializando o hook para redirecionar após o registro
 
   const handleRegister = async () => { // Função para lidar com o registro
     // Verifica se os campos estão preenchidos
@@ -34,8 +36,7 @@ const registro_educador = () => {
       if (response.ok) { // Caso de sucesso
         Alert.alert('Sucesso', 'Registro concluído com sucesso!')
         console.log('Dados do usuário:', data)
-        // Aqui você pode navegar para outra página, por exemplo:
-        // router.push('/login_explorador')
+        router.push('/login_educador') // Redireciona para a página de login do educador
       } else { // Caso de erro
         console.error('Erro no registro:', data)
         Alert.alert('Erro no registro. Tente novamente mais tarde.')
