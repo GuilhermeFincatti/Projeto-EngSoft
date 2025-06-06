@@ -1,12 +1,14 @@
-import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, Alert, Pressable } from 'react-native'
 import { TextInput, Button, Provider as PaperProvider } from 'react-native-paper'
 import { BACKEND_URL } from '../constants/api'
 import { useState } from 'react'
 import { Link, useRouter } from 'expo-router'
+import { ActivityIndicator } from 'react-native'
 
 const login_explorador = () => {
   const [nickname, setNickname] = useState('')
   const [senha, setSenha] = useState('')
+  const [loading, setLoading] = useState(false)
   const router = useRouter() // Inicializando o hook para redirecionar após login
 
   const handleLogin = async () => { // Função para lidar com o login
@@ -15,10 +17,11 @@ const login_explorador = () => {
       Alert.alert('Erro', 'Preencha todos os campos.')
       return
     }
+    setLoading(true) // Inicia o estado de carregamento
 
     try {
       const response = await fetch(`${BACKEND_URL}/login`, { // URL do backend
-        // Substitua pelo IP do seu backend
+        // Substitua pelo IP do seu backend no arquivo constants/api.js
         // Certifique-se de que o backend está rodando e acessível
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -29,17 +32,18 @@ const login_explorador = () => {
       })
 
       const data = await response.json()
-      if (response.ok) { // Caso de sucesso
+      if (response.ok) { // Caso de sucesso 
         // Alert.alert('Sucesso', 'Login realizado com sucesso!')
         router.replace('/home') // Redireciona para a home
       } else { // Caso de erro
         // Exibe o erro retornado pelo backend
         console.error('Erro ao fazer login:', data)
-        console.log(data)
         Alert.alert('Erro', JSON.stringify(data));
       }
     } catch (error) { // Captura erros de rede ou outros problemas
       Alert.alert('Erro', 'Não foi possível conectar ao servidor.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -71,9 +75,21 @@ const login_explorador = () => {
           activeOutlineColor="#2e7d32"
         />
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Entrar</Text>
-        </TouchableOpacity>
+        {loading && <ActivityIndicator size="large" color="#2e7d32" style={{ marginVertical: 20 }} />}
+
+        <Pressable
+          style={({ pressed }) => [
+            styles.loginButton,
+            pressed && { opacity: 0.6 },
+            loading && { opacity: 0.5 },
+          ]}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          <Text style={styles.loginButtonText}>
+            {loading ? 'Processando...' : 'Entrar'}
+          </Text>
+        </Pressable>
 
         <TouchableOpacity style={styles.googleButton}>
           <Text style={styles.googleButtonText}>Entrar com Google</Text>

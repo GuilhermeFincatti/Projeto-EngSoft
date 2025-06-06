@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, View, Pressable, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import { BACKEND_URL } from '../constants/api'
 import { useRouter } from 'expo-router'
+import { ActivityIndicator } from 'react-native'
 
 const registro_explorador = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const router = useRouter() // Inicializando o hook para redirecionar após login
+  const [loading, setLoading] = useState(false)
+  const router = useRouter() // Inicializando o hook para redirecionar após o registro
 
   const handleRegister = async () => { // Função para lidar com o registro
     // Verifica se os campos estão preenchidos
@@ -15,10 +17,10 @@ const registro_explorador = () => {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.')
       return
     }
-
+    setLoading(true) // Inicia o estado de carregamento
     try { 
       const response = await fetch(`${BACKEND_URL}/register`, { // URL do backend
-        // Substitua pelo IP do seu backend
+        // Substitua pelo IP do seu backend no arquivo constants/api.js
         // Certifique-se de que o backend está rodando e acessível
         method: 'POST',
         headers: {
@@ -28,7 +30,7 @@ const registro_explorador = () => {
           nickname: username,
           email: email,
           password: password,
-          tipo: 'explorador' // ou 'educador' dependendo do cadastro
+          tipo: 'explorador' // ou 'explorador' dependendo do cadastro
         }),
       })
 
@@ -39,13 +41,14 @@ const registro_explorador = () => {
         console.log('Dados do usuário:', data)
         router.push('/login_explorador') // Redireciona para a página de login do explorador
       } else { // Caso de erro
-        // Exibe o erro retornado pelo backend
         console.error('Erro no registro:', data)
         Alert.alert('Erro no registro. Tente novamente mais tarde.')
       }
     } catch (error) { // Captura erros de rede ou outros problemas
       console.error('Erro na requisição:', error)
       Alert.alert('Erro', 'Não foi possível conectar ao servidor.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -59,7 +62,7 @@ const registro_explorador = () => {
         <Text style={styles.title}>ESALQ Explorer</Text>
         <Text style={styles.loginText}>Crie sua conta de Explorador</Text>
 
-        <TextInput
+        <TextInput // Componente de entrada de texto para o nome de usuário
           style={styles.input}
           placeholder="Nome de usuário"
           value={username}
@@ -68,7 +71,7 @@ const registro_explorador = () => {
           autoCorrect={false}
         />
 
-        <TextInput
+        <TextInput // Componente de entrada de texto para o e-mail
           style={styles.input}
           placeholder="E-mail"
           value={email}
@@ -78,7 +81,7 @@ const registro_explorador = () => {
           autoCorrect={false}
         />
 
-        <TextInput
+        <TextInput // Componente de entrada de texto para a senha
           style={styles.input}
           placeholder="Senha"
           value={password}
@@ -86,14 +89,20 @@ const registro_explorador = () => {
           secureTextEntry
         />
 
+        {loading && <ActivityIndicator size="large" color="#2e7d32" style={{ marginVertical: 20 }} />}
+
         <Pressable
           style={({ pressed }) => [
             styles.registerButton,
-            pressed && { opacity: 0.6 }, // Efeito de opacidade quando pressionado
+            pressed && { opacity: 0.6 },
+            loading && { opacity: 0.5 }, // efeito visual opcional
           ]}
           onPress={handleRegister}
+          disabled={loading}
         >
-          <Text style={styles.registerButtonText}>Registrar</Text>
+          <Text style={styles.registerButtonText}>
+            {loading ? 'Processando...' : 'Registrar'}
+          </Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>

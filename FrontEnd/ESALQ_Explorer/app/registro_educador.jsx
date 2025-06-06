@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, View, Pressable, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import { BACKEND_URL } from '../constants/api'
 import { useRouter } from 'expo-router'
+import { ActivityIndicator } from 'react-native'
 
 const registro_educador = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
   const router = useRouter() // Inicializando o hook para redirecionar após o registro
 
   const handleRegister = async () => { // Função para lidar com o registro
@@ -15,10 +17,10 @@ const registro_educador = () => {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.')
       return
     }
-
+    setLoading(true) // Inicia o estado de carregamento
     try { 
       const response = await fetch(`${BACKEND_URL}/register`, { // URL do backend
-        // Substitua pelo IP do seu backend
+        // Substitua pelo IP do seu backend no arquivo constants/api.js
         // Certifique-se de que o backend está rodando e acessível
         method: 'POST',
         headers: {
@@ -45,6 +47,8 @@ const registro_educador = () => {
     } catch (error) { // Captura erros de rede ou outros problemas
       console.error('Erro na requisição:', error)
       Alert.alert('Erro', 'Não foi possível conectar ao servidor.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -85,14 +89,20 @@ const registro_educador = () => {
           secureTextEntry
         />
 
+        {loading && <ActivityIndicator size="large" color="#2e7d32" style={{ marginVertical: 20 }} />}
+
         <Pressable
           style={({ pressed }) => [
             styles.registerButton,
-            pressed && { opacity: 0.6 }, // Efeito de opacidade quando pressionado
+            pressed && { opacity: 0.6 },
+            loading && { opacity: 0.5 }, // efeito visual opcional
           ]}
           onPress={handleRegister}
+          disabled={loading}
         >
-          <Text style={styles.registerButtonText}>Registrar</Text>
+          <Text style={styles.registerButtonText}>
+            {loading ? 'Processando...' : 'Registrar'}
+          </Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
