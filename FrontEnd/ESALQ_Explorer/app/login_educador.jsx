@@ -75,8 +75,6 @@ const login_educador = () => {
           activeOutlineColor="#2e7d32"
         />
 
-        {loading && <ActivityIndicator size="large" color="#2e7d32" style={{ marginVertical: 20 }} />}
-
         <Pressable
           style={({ pressed }) => [
             styles.loginButton,
@@ -86,9 +84,11 @@ const login_educador = () => {
           onPress={handleLogin}
           disabled={loading}
         >
-          <Text style={styles.loginButtonText}>
-            {loading ? 'Processando...' : 'Entrar'}
-          </Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.loginButtonText}>Entrar</Text>
+          )}
         </Pressable>
 
         <TouchableOpacity style={styles.googleButton}>

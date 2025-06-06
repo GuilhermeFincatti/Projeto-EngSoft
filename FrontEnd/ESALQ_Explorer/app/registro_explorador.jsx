@@ -89,20 +89,20 @@ const registro_explorador = () => {
           secureTextEntry
         />
 
-        {loading && <ActivityIndicator size="large" color="#2e7d32" style={{ marginVertical: 20 }} />}
-
         <Pressable
           style={({ pressed }) => [
             styles.registerButton,
             pressed && { opacity: 0.6 },
-            loading && { opacity: 0.5 }, // efeito visual opcional
+            loading && { opacity: 0.5 },
           ]}
           onPress={handleRegister}
           disabled={loading}
         >
-          <Text style={styles.registerButtonText}>
-            {loading ? 'Processando...' : 'Registrar'}
-          </Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.registerButtonText}>Registrar</Text>
+          )}
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
