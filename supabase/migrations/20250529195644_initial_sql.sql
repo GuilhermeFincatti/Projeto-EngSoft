@@ -1,7 +1,6 @@
 CREATE TABLE Pessoa (
     Nickname VARCHAR PRIMARY KEY,
     Email VARCHAR NOT NULL,
-    Senha VARCHAR NOT NULL,
     Tipo VARCHAR NOT NULL
 );
 
