@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Pressable, useColorScheme } from 'react-native'
 import { Link } from 'expo-router' 
 import { useRouter } from 'expo-router'
+import { Colors } from "../constants/Colors"
 
 const contact = () => {
   const colorScheme = useColorScheme()

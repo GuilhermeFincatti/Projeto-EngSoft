@@ -1,35 +1,36 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native'
 import { Link } from 'expo-router'
-
-import Logo from '../assets/favicon.png'
 
 const Home = () => {
   return (
-    <View style = {styles.container}>
-      <Image source = {Logo} style = {styles.img} />
+    <View style={styles.container}>
+      <Image
+        source={require('../assets/Logo_ESALQ_Explorer_Sem_Texto.png')} // Logo do ESALQ Explorer
+        style={styles.logo}
+        resizeMode="center" // Ou 'cover', 'stretch', 'repeat', 'center'
+      />
 
-      <Text style = {styles.title}>
-        The Number 1
-      </Text>
+      <Image
+        source={require('../assets/Logo_ESALQ_Explorer_Texto.png')} // Texto que acompanha a logo
+        style={styles.textoLogo}
+        resizeMode="center" // Ou 'cover', 'stretch', 'repeat', 'center'
+      />
 
-      <Text style = {{ marginTop: 10, marginBottom: 30}}>
-        Reading List App
-      </Text>
+      <Text style={styles.subtitle}>Seja bem-vindo!</Text>
 
-      <View style = {styles.card}>
-        <Text>
-          Hello, this is a card.
-        </Text>
+      <View style={styles.buttonContainer}>
+        <Link href="/login_explorador" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Entre como Explorador</Text>
+          </TouchableOpacity>
+        </Link>
+
+        <Link href="/login_educador" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Entre como Educador</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
-
-      <Link href = "/about" style = {styles.link}>
-        About Page
-      </Link>
-
-      <Link href = "/contact" style = {styles.link}>
-        Contact Page
-      </Link>
-
     </View>
   )
 }
@@ -37,30 +38,50 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-
-    title: {
-      fontWeight: 'bold',
-      fontSize: 18
-    },
-
-    card: {
-      backgroundColor: '#eee',
-      padding: 20,
-      borderRadius: 5,
-      boxShadow: '4px 4px rgba(0,0,0,0.3)'
-    },
-
-    img: {
-      marginVertical: 20,
-    },
-
-    link: {
-      marginVertical: 10,
-      borderBottomWidth: 1
-    }
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  logo: {
+    width: 200, 
+    height: 150,
+    transform: [
+      { translateX: 5 } // Move a imagem 5 pixels para a ESQUERDA.
+    ],
+  },
+  textoLogo: {
+    width: 150,
+    height: 70,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2e7d32',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 22,
+    fontFamily: 'Montserrat-Bold',
+    color: '#63a355',
+    marginBottom: 40,
+  },
+  buttonContainer: {
+    width: '100%',
+    gap: 20,
+  },
+  button: {
+    backgroundColor: '#2e7d32',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 })
