@@ -2,13 +2,19 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List, Dict, Any
 from models.mensagem_model import MensagemModel
 from models.usuario_model import UsuarioModel
+from models.pessoa_model import PessoaModel
 
 class MensagemCreate(BaseModel):
-    remente: str
+    remetente: str
+    texto: str
+    carta: Optional[str] = None
+
+class MensagemResponse(BaseModel):
+    remetente: str
     destinatario: str
     datahora: str
     texto: str
-    carta: str
+    carta: Optional[str] = None
 
 class PessoaUpdate(BaseModel):
     email: Optional[EmailStr] = None
@@ -23,54 +29,76 @@ class MensagemController:
     def __init__(self):
         self.model = MensagemModel()
         self.usuario_model = UsuarioModel()
+        self.pessoa_model = PessoaModel()
     
-    def create_mensagem(self, mensagem: MensagemCreate) -> Dict[str, Any]:
-        """Criar uma nova pessoa"""
-        # Validar tipo
-        
-        destinatario = mensagem.destinatario
-        remente = mensagem.remente
-        destinatario_existente = self.usuario_model.find_by_nickname(destinatario)
-        if not destinatario_existente["success"]:
-            return {
-                "success": False,
-                "error": "Destinatário não encontrado",
-                "status_code": 404
-            }
-        remente_existente = self.usuario_model.find_by_nickname(remente)
-        if not remente_existente["success"]:
+    def get_user_nickname_by_email(self, email: str) -> Dict[str, Any]:
+        """Buscar nickname do usuário por email"""
+        return self.pessoa_model.find_by_email(email)
+    
+    def create_mensagem(self, mensagem_data: MensagemCreate, destinatario: str) -> Dict[str, Any]:
+        """Criar uma nova mensagem"""
+        # Verificar se remetente existe
+        remetente_result = self.pessoa_model.find_by_nickname(mensagem_data.remetente)
+        if not remetente_result["success"]:
             return {
                 "success": False,
                 "error": "Remetente não encontrado",
                 "status_code": 404
             }
-
         
-        
-        
-        # Verificar se nickname já existe
-        novamensagem = self.model(mensagem)
-        if existing["success"]:
+        # Verificar se destinatário existe
+        destinatario_result = self.pessoa_model.find_by_nickname(destinatario)
+        if not destinatario_result["success"]:
             return {
                 "success": False,
-                "error": "Nickname já existe",
-                "status_code": 400
+                "error": "Destinatário não encontrado",
+                "status_code": 404
             }
         
-        # Verificar se email já existe
-        existing_email = self.model.find_by_email(pessoa_data.email)
-        if existing_email["success"]:
-            return {
-                "success": False,
-                "error": "Email já está em uso",
-                "status_code": 400
-            }
+        # Verificar se carta existe (se fornecida)
+        if mensagem_data.carta:
+            # Aqui você pode adicionar validação da carta se necessário
+            pass
         
-        # Criar pessoa
-        result = self.model.create(pessoa_data.dict())
+        # Criar mensagem
+        mensagem_dict = {
+            "remetente": mensagem_data.remetente,
+            "destinatario": destinatario,
+            "texto": mensagem_data.texto,
+            "carta": mensagem_data.carta
+        }
+        
+        result = self.model.create(mensagem_dict)
         
         if not result["success"]:
             result["status_code"] = 400
+        
+        return result
+    
+    def get_mensagens_by_destinatario(self, destinatario: str, limit: Optional[int] = None) -> Dict[str, Any]:
+        """Buscar mensagens por destinatário"""
+        result = self.model.find_by_destinatario(destinatario, limit)
+        
+        if not result["success"]:
+            result["status_code"] = 500
+        
+        return result
+    
+    def get_mensagens_by_remetente(self, remetente: str, limit: Optional[int] = None) -> Dict[str, Any]:
+        """Buscar mensagens por remetente"""
+        result = self.model.find_by_remetente(remetente, limit)
+        
+        if not result["success"]:
+            result["status_code"] = 500
+        
+        return result
+    
+    def get_conversa(self, usuario1: str, usuario2: str, limit: Optional[int] = None) -> Dict[str, Any]:
+        """Buscar conversa entre dois usuários"""
+        result = self.model.find_conversa(usuario1, usuario2, limit)
+        
+        if not result["success"]:
+            result["status_code"] = 500
         
         return result
     

@@ -1,38 +1,34 @@
 from typing import List, Optional, Dict, Any
 from config.database import get_database
+from datetime import datetime
 
 class MensagemModel:
     def __init__(self):
         self.db = get_database()
     
     def create(self, mensagem_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Criar uma nova carta"""
+        """Criar uma nova mensagem"""
         try:
+            # Adicionar timestamp atual
+            mensagem_data["datahora"] = datetime.now().isoformat()
+            
             result = self.db.table("mensagem").insert(mensagem_data).execute()
             
             if hasattr(result, 'error') and result.error:
-                raise Exception(f"Erro ao criar carta: {result.error}")
+                raise Exception(f"Erro ao criar mensagem: {result.error}")
             
             return {"success": True, "data": result.data[0] if result.data else None}
         except Exception as e:
             return {"success": False, "error": str(e)}
     
-    def find_by_qrcode(self, qrcode: str) -> Dict[str, Any]:
-        """Buscar carta por QRCode"""
+    def find_by_destinatario(self, destinatario: str, limit: Optional[int] = None) -> Dict[str, Any]:
+        """Buscar mensagens por destinatário"""
         try:
-            result = self.db.table("carta").select("*").eq("qrcode", qrcode).single().execute()
+            query = (self.db.table("mensagem")
+                    .select("*")
+                    .eq("destinatario", destinatario)
+                    .order("datahora", desc=True))
             
-            if not result.data:
-                return {"success": False, "error": "Carta não encontrada"}
-            
-            return {"success": True, "data": result.data}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-    
-    def find_all(self, limit: Optional[int] = None) -> Dict[str, Any]:
-        """Buscar todas as cartas"""
-        try:
-            query = self.db.table("carta").select("*")
             if limit:
                 query = query.limit(limit)
             
@@ -42,59 +38,67 @@ class MensagemModel:
         except Exception as e:
             return {"success": False, "error": str(e)}
     
-    def find_by_raridade(self, raridade: str) -> Dict[str, Any]:
-        """Buscar cartas por raridade"""
+    def find_by_remetente(self, remetente: str, limit: Optional[int] = None) -> Dict[str, Any]:
+        """Buscar mensagens por remetente"""
         try:
-            result = self.db.table("carta").select("*").eq("raridade", raridade).execute()
+            query = (self.db.table("mensagem")
+                    .select("*")
+                    .eq("remetente", remetente)
+                    .order("datahora", desc=True))
+            
+            if limit:
+                query = query.limit(limit)
+            
+            result = query.execute()
             
             return {"success": True, "data": result.data}
         except Exception as e:
             return {"success": False, "error": str(e)}
     
-    def find_by_localizacao(self, localizacao: str) -> Dict[str, Any]:
-        """Buscar cartas por localização"""
+    def find_conversa(self, usuario1: str, usuario2: str, limit: Optional[int] = None) -> Dict[str, Any]:
+        """Buscar conversa entre dois usuários"""
         try:
-            result = self.db.table("carta").select("*").ilike("localizacao", f"%{localizacao}%").execute()
+            query = (self.db.table("mensagem")
+                    .select("*")
+                    .or_(f"and(remetente.eq.{usuario1},destinatario.eq.{usuario2}),and(remetente.eq.{usuario2},destinatario.eq.{usuario1})")
+                    .order("datahora", desc=True))
+            
+            if limit:
+                query = query.limit(limit)
+            
+            result = query.execute()
             
             return {"success": True, "data": result.data}
         except Exception as e:
             return {"success": False, "error": str(e)}
     
-    def update(self, qrcode: str, update_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Atualizar carta"""
+    def find_all(self, limit: Optional[int] = None) -> Dict[str, Any]:
+        """Buscar todas as mensagens"""
         try:
-            result = self.db.table("carta").update(update_data).eq("qrcode", qrcode).execute()
+            query = self.db.table("mensagem").select("*").order("datahora", desc=True)
             
-            if hasattr(result, 'error') and result.error:
-                raise Exception(f"Erro ao atualizar carta: {result.error}")
+            if limit:
+                query = query.limit(limit)
             
-            if not result.data:
-                return {"success": False, "error": "Carta não encontrada"}
+            result = query.execute()
             
-            return {"success": True, "data": result.data[0]}
+            return {"success": True, "data": result.data}
         except Exception as e:
             return {"success": False, "error": str(e)}
     
-    def delete(self, qrcode: str) -> Dict[str, Any]:
-        """Deletar carta"""
+    def delete(self, remetente: str, destinatario: str, datahora: str) -> Dict[str, Any]:
+        """Deletar mensagem específica"""
         try:
-            result = self.db.table("carta").delete().eq("qrcode", qrcode).execute()
-            
-            if hasattr(result, 'error') and result.error:
-                raise Exception(f"Erro ao deletar carta: {result.error}")
-            
-            return {"success": True, "message": "Carta deletada com sucesso"}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-    
-    def get_cartas_raras(self) -> Dict[str, Any]:
-        """Buscar cartas raras com história"""
-        try:
-            result = (self.db.table("carta")
-                     .select("*, cartarara(historia)")
-                     .join("cartarara", "carta.qrcode", "cartarara.qrcode")
+            result = (self.db.table("mensagem")
+                     .delete()
+                     .eq("remetente", remetente)
+                     .eq("destinatario", destinatario)
+                     .eq("datahora", datahora)
                      .execute())
             
-            return {"success": True, "data": result.data}
+            if hasattr(result, 'error') and result.error:
+                raise Exception(f"Erro ao deletar mensagem: {result.error}")
+            
+            return {"success": True, "message": "Mensagem deletada com sucesso"}
         except Exception as e:
             return {"success": False, "error": str(e)}
