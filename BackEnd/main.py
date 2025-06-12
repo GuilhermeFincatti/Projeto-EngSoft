@@ -11,6 +11,7 @@ from auth.reset_password import reset_password
 # Import new routes
 from routes.pessoa_routes import router as pessoa_router
 from routes.carta_routes import router as carta_router
+from routes.mensagem_routes import router as mensagem_router
 
 app = FastAPI(
     title="ESALQ Explorer API", 
@@ -55,6 +56,7 @@ app.add_middleware(
 # Include routers
 app.include_router(pessoa_router, prefix="/api")
 app.include_router(carta_router, prefix="/api")
+app.include_router(mensagem_router, prefix="/api")
 
 class RegisterRequest(BaseModel):
     nickname: str
