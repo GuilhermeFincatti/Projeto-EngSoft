@@ -99,7 +99,7 @@ const login_educador = () => {
           <Text style={styles.footerText}>Não tem conta? </Text>
         </View>
 
-        <Link href="/registro_educador" asChild>
+        <Link href="/home" asChild>
           <TouchableOpacity style={styles.createAccountButton}>
             <Text style={styles.createAccountButtonText}>Criar uma conta de Educador</Text>
           </TouchableOpacity>
