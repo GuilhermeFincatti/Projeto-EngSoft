@@ -2,12 +2,46 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer
 from auth.supabase_client import supabase
 from auth.register_user import register_user
 from auth.login_user import login_user
 from auth.reset_password import reset_password
 
-app = FastAPI()
+# Import new routes
+from routes.pessoa_routes import router as pessoa_router
+from routes.carta_routes import router as carta_router
+
+app = FastAPI(
+    title="ESALQ Explorer API", 
+    version="1.0.0",
+    description="""
+    API para o sistema ESALQ Explorer - um jogo de cartas colecionáveis educativo.
+    
+    ## Autenticação
+    
+    Todas as rotas protegidas requerem autenticação via Bearer Token.
+    Para obter um token, faça login através do endpoint `/login`.
+    
+    ## Recursos Principais
+    
+    * **Pessoas**: Gerenciamento de usuários e educadores
+    * **Cartas**: Gerenciamento das cartas colecionáveis
+    
+    ## Como usar
+    
+    1. Registre-se usando `/register`
+    2. Faça login usando `/login` para obter o token
+    3. Use o token no header Authorization: `Bearer <seu_token>`
+    """,
+    contact={
+        "name": "ESALQ Explorer Team",
+        "email": "contato@esalqexplorer.com",
+    }
+)
+
+# Security scheme
+security = HTTPBearer()
 
 # Libera CORS para testes locais com o front-end
 app.add_middleware(
@@ -17,6 +51,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(pessoa_router, prefix="/api")
+app.include_router(carta_router, prefix="/api")
 
 class RegisterRequest(BaseModel):
     nickname: str
@@ -33,7 +71,14 @@ class ResetRequest(BaseModel):
 
 @app.get("/")
 def root():
-    return {"message": "API Supabase rodando!"}
+    return {"message": "API ESALQ Explorer rodando!", "version": "1.0.0"}
+
+@app.get("/health")
+def health_check():
+    return {
+        "status": "OK",
+        "message": "API funcionando corretamente"
+    }
 
 @app.post("/register")
 def register(data: RegisterRequest):
