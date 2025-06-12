@@ -6,7 +6,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
-const RootLayout = () => {
+const TabsLayout = () => {
   const colorScheme = useColorScheme()
   const theme = Colors[colorScheme] ?? Colors.light
   const [fontsLoaded, fontError] = useFonts({
@@ -32,7 +32,7 @@ const RootLayout = () => {
       <Tabs
         screenOptions={{
           headerStyle: { backgroundColor: theme.navBackground },
-          headerTintColor: theme.title,
+          headerTintColor: theme.title, headerShown: false,
         }}
       >
         <Tabs.Screen name="home" options={{ title: 'Mapa', headerShown: false }} />
@@ -45,6 +45,6 @@ const RootLayout = () => {
   )
 }
 
-export default RootLayout
+export default TabsLayout
 
 const styles = StyleSheet.create({})

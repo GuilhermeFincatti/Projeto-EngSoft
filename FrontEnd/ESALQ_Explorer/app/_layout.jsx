@@ -38,6 +38,7 @@ const RootLayout = () => {
         <Stack.Screen name="login_explorador" options={{ title: 'Login Explorador' }}/>
         <Stack.Screen name="registro_educador" options={{ title: 'Crie sua conta' }}/>
         <Stack.Screen name="registro_explorador" options={{ title: 'Crie sua conta' }}/>
+        <Stack.Screen name="tabs" options={{ headerShown: false }} />
       </Stack>
     </>
   )
