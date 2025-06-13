@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import { useRouter } from 'expo-router'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // Região aproximada da ESALQ para o mapa
 const ESALQ_REGION = {
@@ -40,6 +41,13 @@ const home = () => {
   const router = useRouter()
   const insets = useSafeAreaInsets()
   const mapRef = useRef(null)
+  const [nickname, setNickname] = useState('')
+
+  useEffect(() => {
+    AsyncStorage.getItem('nickname').then(nome => {
+      if (nome) setNickname(nome)
+    })
+  }, [])
 
     // Função para manter o usuário dentro da área da ESALQ
   const handleRegionChange = (region) => {
@@ -102,7 +110,7 @@ const home = () => {
           source={require('../assets/perfil.png')}
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>Seu Nome</Text>
+        <Text style={styles.profileName}>{nickname || 'Seu Nome'}</Text>
       </TouchableOpacity>
 
       {/* Rodapé com botões, respeitando o safe area */}

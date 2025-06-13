@@ -4,6 +4,7 @@ import { BACKEND_URL } from '../constants/api'
 import { useState } from 'react'
 import { Link, useRouter } from 'expo-router'
 import { ActivityIndicator } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const login_explorador = () => {
   const [nickname, setNickname] = useState('')
@@ -34,7 +35,8 @@ const login_explorador = () => {
       const data = await response.json()
       if (response.ok) { // Caso de sucesso 
         // Alert.alert('Sucesso', 'Login realizado com sucesso!')
-        router.replace('/tabs/home') // Redireciona para a home
+        await AsyncStorage.setItem('nickname', nickname) // Armazena o nickname no AsyncStorage
+        router.replace('/home') // Redireciona para a home
       } else { // Caso de erro
         // Exibe o erro retornado pelo backend
         console.error('Erro ao fazer login:', data)
