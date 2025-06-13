@@ -1,26 +1,93 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import { useRouter } from 'expo-router'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+
+// Região aproximada da ESALQ para o mapa
+const ESALQ_REGION = {
+  latitude: -22.7093,
+  longitude: -47.6319,
+  latitudeDelta: 0.005,
+  longitudeDelta: 0.005,
+}
+
+// Limites aproximados da ESALQ
+const LAT_MIN = -22.7100
+const LAT_MAX = -22.7000
+const LNG_MIN = -47.6430
+const LNG_MAX = -47.6200
+
+// Estilo do mapa para esconder POIs e transporte público
+const mapStyle = [
+  {
+    featureType: 'poi',
+    stylers: [{ visibility: 'off' }]
+  },
+  {
+    featureType: 'transit',
+    stylers: [{ visibility: 'off' }]
+  }
+]
+
+// Lista de locais com QR Codes (Depois será integrado com o backend)
+const qrLocations = [
+  { latitude: -22.7085, longitude: -47.6305 },
+  { latitude: -22.7090, longitude: -47.6320 },
+];
 
 const home = () => {
   const router = useRouter()
   const insets = useSafeAreaInsets()
+  const mapRef = useRef(null)
+
+    // Função para manter o usuário dentro da área da ESALQ
+  const handleRegionChange = (region) => {
+    let { latitude, longitude } = region
+    let changed = false
+
+    if (latitude < LAT_MIN) { latitude = LAT_MIN; changed = true }
+    if (latitude > LAT_MAX) { latitude = LAT_MAX; changed = true }
+    if (longitude < LNG_MIN) { longitude = LNG_MIN; changed = true }
+    if (longitude > LNG_MAX) { longitude = LNG_MAX; changed = true }
+
+    if (changed && mapRef.current) {
+      mapRef.current.animateToRegion({
+        ...region,
+        latitude,
+        longitude,
+      }, 200)
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       {/* Mapa interativo cobrindo toda a tela */}
       <MapView
+        ref={mapRef}
         style={StyleSheet.absoluteFill}
         provider={PROVIDER_GOOGLE}
-        initialRegion={{
-          latitude: -22.70930097156, // Exemplo: ESALQ
-          longitude: -47.6318968724,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-      />
+        initialRegion={ESALQ_REGION}
+        minZoomLevel={15} // Impede de afastar muito
+        maxZoomLevel={20} // Impede de aproximar demais
+        onRegionChangeComplete={handleRegionChange}
+        customMapStyle={mapStyle} // Aplica o estilo do mapa
+      >
+        {qrLocations.map((loc, idx) => (
+          <Marker
+            key={idx}
+            coordinate={loc}
+            title="QR Code aqui!"
+            description="Escaneie para ganhar uma carta."
+          >
+            <Image
+              source={require('../assets/local.png')}
+              style={{ width: 25, height: 25 }}
+              resizeMode="contain"
+            />
+          </Marker>
+        ))}
+      </MapView>
 
       {/* Botão de perfil no canto superior esquerdo, respeitando o safe area */}
       <TouchableOpacity
@@ -32,7 +99,7 @@ const home = () => {
         activeOpacity={0.7}
       >
         <Image
-          source={require('../assets/favicon.png')} // Coloque uma imagem de perfil padrão em assets
+          source={require('../assets/perfil.png')}
           style={styles.profileImage}
         />
         <Text style={styles.profileName}>Seu Nome</Text>
@@ -48,7 +115,7 @@ const home = () => {
           onPress={() => router.push('/colecao')}
         >
           <Image
-            source={require('../assets/favicon.png')}
+            source={require('../assets/colecao.png')}
             style={styles.footerIcon}
           />
           <Text style={styles.footerText}>Coleção</Text>
@@ -59,10 +126,10 @@ const home = () => {
           onPress={() => router.push('/camera')}
         >
           <Image
-            source={require('../assets/favicon.png')}
+            source={require('../assets/camera.png')}
             style={styles.footerIcon}
           />
-          <Text style={styles.footerCameraText}>QR Code</Text>
+          <Text style={styles.footerCameraText}>Câmera</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -70,7 +137,7 @@ const home = () => {
           onPress={() => router.push('/missoes')}
         >
           <Image
-            source={require('../assets/favicon.png')}
+            source={require('../assets/missoes.png')}
             style={styles.footerIcon}
           />
           <Text style={styles.footerText}>Missões</Text>
@@ -92,7 +159,7 @@ const styles = StyleSheet.create({
     left: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 30,
     padding: 8,
     elevation: 4,
@@ -122,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingBottom: 30,
-    backgroundColor: 'rgba(255,255,255,0.95)',
+    backgroundColor: 'rgba(255,255,255, 0.9)',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: 120,
