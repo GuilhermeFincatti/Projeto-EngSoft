@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router'
+import { Stack, Tabs } from 'expo-router'
 import { StyleSheet, useColorScheme } from 'react-native'
 import { Colors } from "../constants/Colors"
 import { StatusBar } from 'expo-status-bar'
@@ -38,6 +38,11 @@ const RootLayout = () => {
         <Stack.Screen name="login_explorador" options={{ title: 'Login Explorador' }}/>
         <Stack.Screen name="registro_educador" options={{ title: 'Crie sua conta' }}/>
         <Stack.Screen name="registro_explorador" options={{ title: 'Crie sua conta' }}/>
+        <Stack.Screen name="home" options={{ title: 'Mapa', headerBackVisible: false}} />
+        <Stack.Screen name="colecao" options={{ title: 'Coleção'}} />
+        <Stack.Screen name="camera" options={{ title: 'QR Code'}} />
+        <Stack.Screen name="missoes" options={{ title: 'Missões'}} />
+        <Stack.Screen name="perfil" options={{ title: 'Perfil'}} />
       </Stack>
     </>
   )
