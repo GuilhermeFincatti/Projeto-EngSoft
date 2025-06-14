@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, BackHandler, Alert } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import { useRouter } from 'expo-router'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -49,7 +49,25 @@ const home = () => {
     })
   }, [])
 
-    // Função para manter o usuário dentro da área da ESALQ
+  useEffect(() => {
+    const onBackPress = () => {
+      Alert.alert(
+        'Sair do aplicativo',
+        'Você realmente deseja sair?',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Sim', onPress: () => BackHandler.exitApp() }
+        ]
+      )
+      return true // impede o comportamento padrão
+    }
+
+    BackHandler.addEventListener('hardwareBackPress', onBackPress)
+
+    return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress)
+  }, [])
+
+  // Função para manter o usuário dentro da área da ESALQ
   const handleRegionChange = (region) => {
     let { latitude, longitude } = region
     let changed = false
