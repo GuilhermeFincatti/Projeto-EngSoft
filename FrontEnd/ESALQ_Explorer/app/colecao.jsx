@@ -1,21 +1,30 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import React from 'react'
-
-const TOTAL_CARTAS = 30 // Altere conforme necessário
+import { useRouter } from 'expo-router'
+import { cartas } from './carta/cartas' // Importa o array correto
 
 const colecao = () => {
   // Precisa integrar com Backend para obter as cartas coletadas
   const cartasColetadas = [1, 2, 5, 7, 10, 12, 15]
+  const router = useRouter()
 
   const renderCarta = ({ item }) => {
-    const coletada = cartasColetadas.includes(item)
+    const coletada = cartasColetadas.includes(item.id)
     return (
-      <TouchableOpacity style={[styles.carta, coletada && styles.cartaColetada]}>
+      <TouchableOpacity
+        style={[
+          styles.carta,
+          coletada && styles.cartaColetada,
+          item.tipo === 'rara' && styles.cartaRara,
+        ]}
+        onPress={coletada ? () => router.push(`/carta/${item.id}`) : undefined}
+        activeOpacity={coletada ? 0.7 : 1}
+      >
         <Text style={[styles.numeroCarta, coletada && styles.numeroCartaColetada]}>
-          {item.toString().padStart(2, '0')}
+          {item.id.toString().padStart(2, '0')}
         </Text>
         <Text style={styles.statusCarta}>
-          {coletada ? 'Coletada' : '???'}
+          {coletada ? (item.tipo === 'rara' ? 'Rara' : 'Comum') : '???'}
         </Text>
       </TouchableOpacity>
     )
@@ -26,9 +35,9 @@ const colecao = () => {
       <Text style={styles.title}>Coleção de Cartas</Text>
       <Text style={styles.subtitle}>Complete sua coleção!</Text>
       <FlatList
-        data={Array.from({ length: TOTAL_CARTAS }, (_, i) => i + 1)}
+        data={cartas}
         renderItem={renderCarta}
-        keyExtractor={item => item.toString()}
+        keyExtractor={item => item.id.toString()}
         numColumns={3}
         contentContainerStyle={styles.grid}
         showsVerticalScrollIndicator={false}
@@ -77,6 +86,10 @@ const styles = StyleSheet.create({
   cartaColetada: {
     backgroundColor: '#2e7d32',
     borderColor: '#388e3c',
+  },
+  cartaRara: {
+    borderWidth: 3,
+    borderColor: '#FFD700', // Dourado para raras
   },
   numeroCarta: {
     fontSize: 32,
