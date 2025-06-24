@@ -17,6 +17,11 @@ from routes.adiciona_routes import router as adiciona_router
 from routes.chat_routes import router as chat_router
 from routes.missaoqtd_routes import router as missaoqtd_router
 from routes.cartarara_routes import router as cartarara_router
+from routes.educador_routes import router as educador_router
+from routes.missao_routes import router as missao_router
+from routes.missaoraridade_routes import router as missaoraridade_router
+from routes.participaquantidade_routes import router as participaquantidade_router
+from routes.participararidade_routes import router as participararidade_router
 
 app = FastAPI(
     title="ESALQ Explorer API", 
@@ -67,6 +72,11 @@ app.include_router(adiciona_router, prefix="/api")
 app.include_router(chat_router, prefix="/api")
 app.include_router(missaoqtd_router, prefix="/api")
 app.include_router(cartarara_router, prefix="/api")
+app.include_router(educador_router, prefix="/api")
+app.include_router(missao_router, prefix="/api")
+app.include_router(missaoraridade_router, prefix="/api")
+app.include_router(participaquantidade_router, prefix="/api")
+app.include_router(participararidade_router, prefix="/api")
 
 class RegisterRequest(BaseModel):
     nickname: str
