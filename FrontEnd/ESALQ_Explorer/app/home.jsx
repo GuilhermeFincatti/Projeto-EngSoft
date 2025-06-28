@@ -42,10 +42,14 @@ const home = () => {
   const insets = useSafeAreaInsets()
   const mapRef = useRef(null)
   const [nickname, setNickname] = useState('')
+  const [profileImage, setProfileImage] = useState(null)
 
   useEffect(() => {
     AsyncStorage.getItem('nickname').then(nome => {
       if (nome) setNickname(nome)
+    })
+    AsyncStorage.getItem('profileImage').then(img => {
+      if (img) setProfileImage(img)
     })
   }, [])
 
@@ -125,7 +129,11 @@ const home = () => {
         activeOpacity={0.7}
       >
         <Image
-          source={require('../assets/perfil.png')}
+          source={
+            profileImage
+              ? { uri: profileImage }
+              : require('../assets/perfil.png')
+          }
           style={styles.profileImage}
         />
         <Text style={styles.profileName}>{nickname || 'Seu Nome'}</Text>
@@ -149,7 +157,7 @@ const home = () => {
 
         <TouchableOpacity
           style={[styles.footerButton, styles.cameraButton]}
-          onPress={() => router.push('/camera')}
+          onPress={() => router.push('/camera_tela')}
         >
           <Image
             source={require('../assets/camera.png')}

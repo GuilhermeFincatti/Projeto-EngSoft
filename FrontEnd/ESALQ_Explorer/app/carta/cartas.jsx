@@ -90,3 +90,5 @@ export const cartas = [
     curiosidade: 'Plutão tem cinco luas e um coração de gelo em sua superfície.'
   }
 ]
+
+export default cartas

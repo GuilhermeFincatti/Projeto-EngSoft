@@ -1,12 +1,18 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'expo-router'
 import { cartas } from './carta/cartas' // Importa o array correto
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const colecao = () => {
-  // Precisa integrar com Backend para obter as cartas coletadas
-  const cartasColetadas = [1, 2, 5, 7, 10, 12, 15]
+  const [cartasColetadas, setCartasColetadas] = useState([])
   const router = useRouter()
+
+  useEffect(() => {
+    AsyncStorage.getItem('cartasColetadas').then(data => {
+      setCartasColetadas(data ? JSON.parse(data) : [])
+    })
+  }, [])
 
   const renderCarta = ({ item }) => {
     const coletada = cartasColetadas.includes(item.id)
