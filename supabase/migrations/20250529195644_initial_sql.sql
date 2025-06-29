@@ -12,10 +12,7 @@ CREATE TABLE Educador (
 CREATE TABLE Usuario (
     Nickname VARCHAR PRIMARY KEY REFERENCES Pessoa(Nickname) ON DELETE CASCADE,
     Ranking VARCHAR NOT NULL,
-    QtdCartas INT DEFAULT 0,
-    Xp INT DEFAULT 0,
-    FotoPerfil TEXT,
-    Nivel INT DEFAULT 1
+    QtdCartas INT DEFAULT 0
 );
 
 CREATE TABLE Adiciona (

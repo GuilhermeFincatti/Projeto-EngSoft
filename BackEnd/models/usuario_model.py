@@ -32,7 +32,7 @@ class UsuarioModel:
     def find_all(self, limit: Optional[int] = None) -> Dict[str, Any]:
         """Buscar todas as pessoas"""
         try:
-            query = self.db.table("usuario").select("*").order('xp', desc=True)
+            query = self.db.table("usuario").select("*")
             if limit:
                 query = query.limit(limit)
             
@@ -77,20 +77,7 @@ class UsuarioModel:
             return {"success": True, "data": result.data[0]}
         except Exception as e:
             return {"success": False, "error": str(e)}
-        
-    def get_leaderboard(self, limit: Optional[int] = None) -> Dict[str, Any]:
-        """Buscar leaderboard de pessoas"""
-        try:
-            query = self.db.table("usuario").select("*").order("xp", desc=True)
-            if limit:
-                query = query.limit(limit)
-            
-            result = query.execute()
-            
-            return {"success": True, "data": result.data}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-        
+    
     def delete(self, nickname: str) -> Dict[str, Any]:
         """Deletar pessoa"""
         try:

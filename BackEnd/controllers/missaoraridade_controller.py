@@ -3,12 +3,12 @@ from typing import Dict, Any
 from models.missaoraridade_model import MissaoRaridadeModel
 
 class MissaoRaridadeCreate(BaseModel):
-    Codigo: int
-    CartaRara: str
+    codigo: int
+    cartarara: str
 
 class MissaoRaridadeResponse(BaseModel):
-    Codigo: int
-    CartaRara: str
+    codigo: int
+    cartarara: str
 
 class MissaoRaridadeController:
     def __init__(self):
@@ -16,7 +16,7 @@ class MissaoRaridadeController:
     
     def create_relacao(self, data: MissaoRaridadeCreate) -> Dict[str, Any]:
         """Criar nova relação missão-raridade"""
-        existing = self.model.find_by_codigo_qrcode(data.Codigo, data.CartaRara)
+        existing = self.model.find_by_codigo_qrcode(data.codigo, data.cartarara)
         if existing["success"]:
             return {
                 "success": False,

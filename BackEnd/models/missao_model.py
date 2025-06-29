@@ -23,9 +23,6 @@ class MissaoModel:
             return {"success": True, "data": result.data[0] if result.data else None}
 
         except Exception as e:
-            print(f"ERROR MissaoModel: {str(e)}")
-            import traceback
-            traceback.print_exc()
             return {"success": False, "error": str(e)}
 
 
@@ -37,9 +34,6 @@ class MissaoModel:
                 return {"success": False, "error": "Missão não encontrada"}
             return {"success": True, "data": result.data}
         except Exception as e:
-            print(f"ERROR MissaoModel: {str(e)}")
-            import traceback
-            traceback.print_exc()
             return {"success": False, "error": str(e)}
 
     def find_all(self) -> Dict[str, Any]:
@@ -48,9 +42,6 @@ class MissaoModel:
             result = self.db.table("missao").select("*").execute()
             return {"success": True, "data": result.data}
         except Exception as e:
-            print(f"ERROR MissaoModel: {str(e)}")
-            import traceback
-            traceback.print_exc()
             return {"success": False, "error": str(e)}
 
     def update(self, codigo: int, update_data: Dict[str, Any]) -> Dict[str, Any]:

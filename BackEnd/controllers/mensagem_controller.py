@@ -31,6 +31,10 @@ class MensagemController:
         self.usuario_model = UsuarioModel()
         self.pessoa_model = PessoaModel()
     
+    def get_user_nickname_by_email(self, email: str) -> Dict[str, Any]:
+        """Buscar nickname do usuário por email"""
+        return self.pessoa_model.find_by_email(email)
+    
     def create_mensagem(self, mensagem_data: MensagemCreate, destinatario: str) -> Dict[str, Any]:
         """Criar uma nova mensagem"""
         # Verificar se remetente existe

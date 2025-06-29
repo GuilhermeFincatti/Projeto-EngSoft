@@ -23,6 +23,10 @@ class AdicionaController:
         self.usuario_model = UsuarioModel()
         self.pessoa_model = PessoaModel()
     
+    def get_user_nickname_by_email(self, email: str) -> Dict[str, Any]:
+        """Buscar nickname do usuário por email"""
+        return self.pessoa_model.find_by_email(email)
+    
     def create_solicitacao(self, adiciona_data: AdicionaCreate, usuario1: str) -> Dict[str, Any]:
         """Criar nova solicitação de amizade"""
         # Verificar se usuário1 existe

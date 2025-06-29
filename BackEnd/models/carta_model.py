@@ -25,28 +25,6 @@ class CartaModel:
             if not result.data:
                 return {"success": False, "error": "Carta não encontrada"}
             
-            # Adicionar nome dinâmico à carta
-            cartas_nomes = {
-                'QR001': 'Framboyant Dourado',
-                'QR002': 'Pau-Brasil Histórico', 
-                'QR003': 'Pau-Formiga Guardião',
-                'QR004': 'Cuieté Majestoso',
-                'QR005': 'Abricó-de-Macaco',
-                'QR006': 'Sol Radiante',
-                'QR007': 'Júpiter Colossal',
-                'QR008': 'Saturno dos Anéis',
-                'QR009': 'Urano Místico',
-                'QR010': 'Netuno Tempestuoso',
-                'QR011': 'Plutão Distante',
-                '1': 'Framboyant Dourado',
-                '2': 'Pau-Brasil Histórico',
-                '3': 'Pau-Formiga Guardião',
-                '4': 'Cuieté Majestoso',
-                '5': 'Abricó-de-Macaco'
-            }
-            
-            result.data["nome"] = cartas_nomes.get(qrcode, f"Carta {qrcode}")
-            
             return {"success": True, "data": result.data}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -59,31 +37,6 @@ class CartaModel:
                 query = query.limit(limit)
             
             result = query.execute()
-            
-            # Adicionar nomes dinâmicos às cartas
-            if result.data:
-                cartas_nomes = {
-                    'QR001': 'Framboyant Dourado',
-                    'QR002': 'Pau-Brasil Histórico', 
-                    'QR003': 'Pau-Formiga Guardião',
-                    'QR004': 'Cuieté Majestoso',
-                    'QR005': 'Abricó-de-Macaco',
-                    'QR006': 'Sol Radiante',
-                    'QR007': 'Júpiter Colossal',
-                    'QR008': 'Saturno dos Anéis',
-                    'QR009': 'Urano Místico',
-                    'QR010': 'Netuno Tempestuoso',
-                    'QR011': 'Plutão Distante',
-                    '1': 'Framboyant Dourado',
-                    '2': 'Pau-Brasil Histórico',
-                    '3': 'Pau-Formiga Guardião',
-                    '4': 'Cuieté Majestoso',
-                    '5': 'Abricó-de-Macaco'
-                }
-                
-                for carta in result.data:
-                    qrcode = carta["qrcode"]
-                    carta["nome"] = cartas_nomes.get(qrcode, f"Carta {qrcode}")
             
             return {"success": True, "data": result.data}
         except Exception as e:

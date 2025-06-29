@@ -1,9 +1,10 @@
 import { Text, View, StyleSheet, TouchableOpacity, Alert, Pressable } from 'react-native'
 import { TextInput, Button, Provider as PaperProvider } from 'react-native-paper'
+import { BACKEND_URL } from '../constants/api'
 import { useState } from 'react'
 import { Link, useRouter } from 'expo-router'
 import { ActivityIndicator } from 'react-native'
-import { apiService, ApiError, NetworkError } from '../services/api'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const login_explorador = () => {
   const [nickname, setNickname] = useState('')
@@ -11,30 +12,38 @@ const login_explorador = () => {
   const [loading, setLoading] = useState(false)
   const router = useRouter() // Inicializando o hook para redirecionar após login
 
-  const handleLogin = async () => {
+  const handleLogin = async () => { // Função para lidar com o login
     // Verifica se os campos estão preenchidos
     if (!nickname || !senha) {
       Alert.alert('Erro', 'Preencha todos os campos.')
       return
     }
-    setLoading(true)
+    setLoading(true) // Inicia o estado de carregamento
 
     try {
-      await apiService.login(nickname, senha)
-      // Login bem-sucedido - redireciona para home
-      router.replace('/home')
-    } catch (error) {
-      console.error('Erro ao fazer login:', error)
-      
-      let errorMessage = 'Erro desconhecido. Tente novamente.'
-      
-      if (error instanceof ApiError) {
-        errorMessage = error.getUserMessage()
-      } else if (error instanceof NetworkError) {
-        errorMessage = error.getUserMessage()
+      const response = await fetch(`${BACKEND_URL}/login`, { // URL do backend
+        // Substitua pelo IP do seu backend no arquivo constants/api.js
+        // Certifique-se de que o backend está rodando e acessível
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nickname: nickname,
+          password: senha,
+        }),
+      })
+
+      const data = await response.json()
+      if (response.ok) { // Caso de sucesso 
+        // Alert.alert('Sucesso', 'Login realizado com sucesso!')
+        await AsyncStorage.setItem('nickname', nickname) // Armazena o nickname no AsyncStorage
+        router.replace('/home') // Redireciona para a home
+      } else { // Caso de erro
+        // Exibe o erro retornado pelo backend
+        console.error('Erro ao fazer login:', data)
+        Alert.alert('Erro', JSON.stringify(data));
       }
-      
-      Alert.alert('Erro', errorMessage)
+    } catch (error) { // Captura erros de rede ou outros problemas
+      Alert.alert('Erro', 'Não foi possível conectar ao servidor.')
     } finally {
       setLoading(false)
     }

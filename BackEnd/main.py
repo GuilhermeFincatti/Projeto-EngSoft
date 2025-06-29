@@ -22,8 +22,6 @@ from routes.missao_routes import router as missao_router
 from routes.missaoraridade_routes import router as missaoraridade_router
 from routes.participaquantidade_routes import router as participaquantidade_router
 from routes.participararidade_routes import router as participararidade_router
-from routes.colecao_routes import router as colecao_router
-from routes.amizade_routes import router as amizade_router
 
 app = FastAPI(
     title="ESALQ Explorer API", 
@@ -79,8 +77,6 @@ app.include_router(missao_router, prefix="/api")
 app.include_router(missaoraridade_router, prefix="/api")
 app.include_router(participaquantidade_router, prefix="/api")
 app.include_router(participararidade_router, prefix="/api")
-app.include_router(colecao_router)
-app.include_router(amizade_router, prefix="/api")
 
 class RegisterRequest(BaseModel):
     nickname: str
@@ -132,8 +128,3 @@ def reset(data: ResetRequest):
         return {"message": result}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="debug")

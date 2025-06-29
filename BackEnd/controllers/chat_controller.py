@@ -17,6 +17,10 @@ class ChatController:
         self.usuario_model = UsuarioModel()
         self.pessoa_model = PessoaModel()
     
+    def get_user_nickname_by_email(self, email: str) -> Dict[str, Any]:
+        """Buscar nickname do usuário por email"""
+        return self.pessoa_model.find_by_email(email)
+    
     def create_chat(self, chat_data: ChatCreate, usuario1: str) -> Dict[str, Any]:
         """Criar novo chat"""
         # Verificar se usuário1 existe

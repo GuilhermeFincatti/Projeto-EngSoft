@@ -1,177 +1,67 @@
-import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Image } from 'react-native'
 import { useLocalSearchParams } from 'expo-router'
 import { cartas } from './cartas'
-import React, { useState, useEffect } from 'react'
-import { apiService } from '../../services/api'
+import React from 'react'
 
 export default function CartaDetalhe() {
   const { id } = useLocalSearchParams()
-  const [carta, setCarta] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const carta = cartas.find(c => c.id === Number(id))
 
-  useEffect(() => {
-    carregarCarta()
-  }, [id])
-
-  const carregarCarta = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      
-      // Primeiro tenta buscar da coleção do usuário
-      try {
-        const minhaColecao = await apiService.getMinhaColecao()
-        const cartaColecao = minhaColecao.find(item => item.qrcode === id)
-        
-        if (cartaColecao && cartaColecao.carta) {
-          const cartaData = {
-            id: cartaColecao.qrcode,
-            qrcode: cartaColecao.qrcode,
-            nome: cartaColecao.carta.nome || `Carta ${cartaColecao.qrcode}`,
-            tipo: cartaColecao.carta.raridade,
-            raridade: cartaColecao.carta.raridade,
-            descricao: cartaColecao.carta.descricao || cartaColecao.carta.localizacao || 'Carta misteriosa',
-            imagem: cartaColecao.carta.imagem,
-            audio: cartaColecao.carta.audio,
-            localizacao: cartaColecao.carta.localizacao,
-            quantidade: cartaColecao.quantidade
-          }
-          setCarta(cartaData)
-          return
-        }
-      } catch (colecaoError) {
-        console.warn('Erro ao buscar da coleção:', colecaoError)
-      }
-      
-      // Se não encontrou na coleção, busca todas as cartas
-      try {
-        const todasCartas = await apiService.getCartas()
-        const cartaEncontrada = todasCartas.find(c => c.qrcode === id)
-        
-        if (cartaEncontrada) {
-          const cartaData = {
-            id: cartaEncontrada.qrcode,
-            qrcode: cartaEncontrada.qrcode,
-            nome: cartaEncontrada.nome || `Carta ${cartaEncontrada.qrcode}`,
-            tipo: cartaEncontrada.raridade,
-            raridade: cartaEncontrada.raridade,
-            descricao: cartaEncontrada.descricao || cartaEncontrada.localizacao || 'Carta misteriosa',
-            imagem: cartaEncontrada.imagem,
-            audio: cartaEncontrada.audio,
-            localizacao: cartaEncontrada.localizacao
-          }
-          setCarta(cartaData)
-          return
-        }
-      } catch (cartasError) {
-        console.warn('Erro ao buscar cartas:', cartasError)
-      }
-      
-      // Fallback para dados locais
-      const cartaLocal = cartas.find(c => c.id === Number(id) || c.id === id)
-      if (cartaLocal) {
-        setCarta(cartaLocal)
-      } else {
-        setError('Carta não encontrada')
-      }
-      
-    } catch (error) {
-      console.error('Erro ao carregar carta:', error)
-      setError('Erro ao carregar carta')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  if (loading) {
+  if (!carta) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#2e7d32" />
-        <Text style={styles.loadingText}>Carregando carta...</Text>
+        <Text style={styles.naoEncontrada}>Carta não encontrada.</Text>
       </View>
     )
   }
 
-  if (error || !carta) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.naoEncontrada}>{error || 'Carta não encontrada.'}</Text>
-      </View>
-    )
-  }
-
-  const getTipoStyle = (tipo) => {
+  // Seleciona o estilo da carta conforme o tipo
+  const getCartaStyle = tipo => {
     switch (tipo) {
       case 'rara':
-        return { backgroundColor: '#FFD700', color: '#7c6500' }
+        return styles.cartaRara
       case 'épica':
-        return { backgroundColor: '#9932CC', color: '#fff' }
+        return styles.cartaEpica
       case 'lendária':
-        return { backgroundColor: '#FF4500', color: '#fff' }
-      case 'incomum':
-        return { backgroundColor: '#32CD32', color: '#fff' }
+        return styles.cartaLendaria
       default:
-        return { backgroundColor: '#b2dfdb', color: '#2e7d32' }
+        return styles.cartaComum
     }
   }
 
-  const getCardStyle = (tipo) => {
+  // Seleciona o estilo do tipo conforme o tipo
+  const getTipoStyle = tipo => {
     switch (tipo) {
       case 'rara':
-        return { backgroundColor: '#fffbe6', borderColor: '#FFD700' }
+        return styles.tipoRara
       case 'épica':
-        return { backgroundColor: '#f8f0ff', borderColor: '#9932CC' }
+        return styles.tipoEpica
       case 'lendária':
-        return { backgroundColor: '#fff5ee', borderColor: '#FF4500' }
-      case 'incomum':
-        return { backgroundColor: '#f0fff0', borderColor: '#32CD32' }
+        return styles.tipoLendaria
       default:
-        return { backgroundColor: '#e0f2f1', borderColor: '#2e7d32' }
+        return styles.tipoComum
     }
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <View style={[
-          styles.cartaDetalhe,
-          getCardStyle(carta.tipo)
-        ]}>
-          {/* Imagem da carta */}
-          {carta.imagem && (
-            <Image 
-              source={{ uri: carta.imagem }} 
-              style={styles.imagemCarta}
-              resizeMode="cover"
-            />
-          )}
-          
-          <Text style={styles.numeroCarta}>
-            {(carta.qrcode || carta.id || '').toString().replace('QR', '').padStart(2, '0')}
-          </Text>
-          <Text style={styles.nomeCarta}>{carta.nome}</Text>
-          <View style={[
-            styles.tipoCarta,
-            getTipoStyle(carta.tipo)
-          ]}>
-            <Text style={[styles.tipoTexto, { color: getTipoStyle(carta.tipo).color }]}>
-              {carta.tipo?.toUpperCase() || 'COMUM'}
-            </Text>
-          </View>
-          <Text style={styles.descricao}>{carta.descricao}</Text>
-          
-          {/* Informações adicionais */}
-          {carta.localizacao && (
-            <Text style={styles.localizacao}>📍 {carta.localizacao}</Text>
-          )}
-          
-          {carta.quantidade && (
-            <Text style={styles.quantidade}>Quantidade: {carta.quantidade}</Text>
-          )}
-        </View>
+    <View style={styles.container}>
+      <View style={[styles.cartaDetalhe, getCartaStyle(carta.tipo)]}>
+        {/* Exibe a imagem se existir */}
+        {carta.imagem && (
+          <Image
+            source={carta.imagem}
+            style={{ width: 120, height: 120, borderRadius: 12}}
+            resizeMode="cover"
+          />
+        )}
+        <Text style={styles.numeroCarta}>{carta.id.toString().padStart(2, '0')}</Text>
+        <Text style={styles.nomeCarta}>{carta.nome}</Text>
+        <Text style={[styles.tipoCarta, getTipoStyle(carta.tipo)]}>
+          {carta.tipo ? carta.tipo.toUpperCase() : ''}
+        </Text>
+        <Text style={styles.descricao}>{carta.descricao}</Text>
       </View>
-    </ScrollView>
+    </View>
   )
 }
 
@@ -179,16 +69,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  content: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
   cartaDetalhe: {
-    width: 300,
-    minHeight: 400,
+    width: 320,
+    height: 420,
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
@@ -197,11 +84,21 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     marginBottom: 20,
   },
-  imagemCarta: {
-    width: 200,
-    height: 120,
-    borderRadius: 12,
-    marginBottom: 16,
+  cartaComum: {
+    backgroundColor: '#e0f2f1',
+    borderColor: '#2e7d32',
+  },
+  cartaRara: {
+    backgroundColor: '#fffbe6',
+    borderColor: '#FFD700',
+  },
+  cartaEpica: {
+    backgroundColor: '#e0e7ff',
+    borderColor: '#7c3aed',
+  },
+  cartaLendaria: {
+    backgroundColor: '#fff0f6',
+    borderColor: '#ff1744',
   },
   numeroCarta: {
     fontSize: 48,
@@ -210,56 +107,47 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   nomeCarta: {
-    fontSize: 24,
+    fontSize: 28,
     fontFamily: 'Montserrat-ExtraBold',
     color: '#2e7d32',
-    marginBottom: 12,
-    textAlign: 'center',
+    marginBottom: 8,
   },
   tipoCarta: {
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  tipoTexto: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Montserrat-Bold',
+    marginBottom: 16,
     letterSpacing: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  tipoComum: {
+    backgroundColor: '#b2dfdb',
+    color: '#2e7d32',
+  },
+  tipoRara: {
+    backgroundColor: '#FFD700',
+    color: '#7c6500',
+  },
+  tipoEpica: {
+    backgroundColor: '#7c3aed',
+    color: '#fff',
+  },
+  tipoLendaria: {
+    backgroundColor: '#ff1744',
+    color: '#fff',
   },
   descricao: {
     fontSize: 16,
     fontFamily: 'Montserrat-Regular',
     color: '#555',
     textAlign: 'center',
-    marginTop: 8,
-    lineHeight: 22,
-  },
-  localizacao: {
-    fontSize: 14,
-    fontFamily: 'Montserrat-Regular',
-    color: '#666',
-    textAlign: 'center',
     marginTop: 12,
-    fontStyle: 'italic',
-  },
-  quantidade: {
-    fontSize: 14,
-    fontFamily: 'Montserrat-Bold',
-    color: '#2e7d32',
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  loadingText: {
-    fontSize: 16,
-    fontFamily: 'Montserrat-Regular',
-    color: '#2e7d32',
-    marginTop: 10,
   },
   naoEncontrada: {
     fontSize: 20,
     color: '#c00',
     fontFamily: 'Montserrat-Bold',
-    textAlign: 'center',
   },
 })
