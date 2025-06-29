@@ -46,6 +46,8 @@ CREATE TABLE Mensagem (
     DataHora TIMESTAMP,
     Texto TEXT,
     Carta VARCHAR REFERENCES Carta(QRCode) ON DELETE CASCADE, 
+    Tipo VARCHAR DEFAULT 'texto', -- texto, carta, troca
+    TrocaID INT REFERENCES TrocaCarta(ID) ON DELETE SET NULL,
     PRIMARY KEY (Remetente, Destinatario, DataHora)
 );
 
@@ -102,3 +104,21 @@ CREATE TABLE MissaoQtdCartas (
     QRCode VARCHAR REFERENCES Carta(QRCode) ON DELETE CASCADE,
     PRIMARY KEY (Codigo, QRCode)
 );
+
+-- Tabela para gerenciar trocas de cartas
+CREATE TABLE TrocaCarta (
+    ID SERIAL PRIMARY KEY,
+    Solicitante VARCHAR REFERENCES Usuario(Nickname) ON DELETE CASCADE,
+    Destinatario VARCHAR REFERENCES Usuario(Nickname) ON DELETE CASCADE,
+    CartaOferecida VARCHAR REFERENCES Carta(QRCode) ON DELETE CASCADE,
+    CartaSolicitada VARCHAR REFERENCES Carta(QRCode) ON DELETE CASCADE,
+    Status VARCHAR DEFAULT 'pendente', -- pendente, aceita, rejeitada, cancelada
+    DataSolicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    DataResposta TIMESTAMP,
+    MensagemID VARCHAR -- Para referenciar a mensagem que contém a troca
+);
+
+-- Índices para melhor performance
+CREATE INDEX idx_troca_solicitante ON TrocaCarta(Solicitante);
+CREATE INDEX idx_troca_destinatario ON TrocaCarta(Destinatario);
+CREATE INDEX idx_troca_status ON TrocaCarta(Status);

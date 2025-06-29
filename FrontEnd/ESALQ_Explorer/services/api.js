@@ -37,6 +37,7 @@ class ApiService {
         "Content-Type": "application/json",
         ...options.headers,
       },
+      timeout: 10000, // 10 segundos de timeout
       ...options,
     };
 
@@ -47,6 +48,12 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
+      
+      // Verificar se a resposta é válida
+      if (!response) {
+        throw new NetworkError("Resposta inválida do servidor");
+      }
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -58,7 +65,10 @@ class ApiService {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new NetworkError(error.message);
+      if (error.name === 'TypeError' && error.message.includes('Network request failed')) {
+        throw new NetworkError("Erro de conexão. Verifique sua internet.");
+      }
+      throw new NetworkError(error.message || "Erro de conexão desconhecido");
     }
   }
 

@@ -24,7 +24,7 @@ class ColecaoModel:
                 # Se não existe, inserir nova entrada
                 coleta_data = {
                     "usuario": usuario,
-                    "qrCode": qrcode,
+                    "qrcode": qrcode,
                     "quantidade": quantidade
                 }
                 print(f"DEBUG ColecaoModel: Inserindo nova entrada: {coleta_data}")

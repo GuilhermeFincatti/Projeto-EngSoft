@@ -135,3 +135,20 @@ Certifique-se de que `constants/api.js` tem a URL correta:
 ```javascript
 export const BACKEND_URL = "http://SEU_IP:8000"
 ```
+
+## Splash Screen
+
+O aplicativo usa o logo do ESALQ Explorer como splash screen:
+- Configurado em `app.json` para mostrar automaticamente
+- Componente customizado `CustomSplashScreen` para animações
+- Duração configurável no `_layout.jsx`
+
+### Personalização da Splash Screen
+
+Para alterar a duração da splash screen:
+```javascript
+// Em _layout.jsx
+setTimeout(async () => {
+  await SplashScreen.hideAsync();
+}, 2000); // Altere para a duração desejada em ms
+```

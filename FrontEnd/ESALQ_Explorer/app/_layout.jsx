@@ -26,6 +26,7 @@ const RootLayout = () => {
     return null;
   }
 
+  // App pronto para uso
   return (
     <>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'}/>

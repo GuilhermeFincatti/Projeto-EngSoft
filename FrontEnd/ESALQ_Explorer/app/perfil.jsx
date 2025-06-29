@@ -3,13 +3,17 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, ActivityIndicat
 import * as ImagePicker from 'expo-image-picker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { apiService } from '../services/api'
+import { useProfileImage } from '../hooks/useProfileImage'
 
 const perfil = () => {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
-  const [profileImage, setProfileImage] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+
+  // Hook para gerenciar a foto de perfil
+  const { profileImage, updateProfileImage, refreshProfileImage } = useProfileImage()
 
   // Dados do usuário vindos do backend
   const [userData, setUserData] = useState({
@@ -29,7 +33,6 @@ const perfil = () => {
   })
 
   const [missoes, setMissoes] = useState(0)
-  const [uploadingPhoto, setUploadingPhoto] = useState(false)
 
   useEffect(() => {
     carregarDadosPerfil()
@@ -43,11 +46,9 @@ const perfil = () => {
       // Carrega dados básicos do AsyncStorage
       const nickname = await AsyncStorage.getItem('nickname')
       const emailStorage = await AsyncStorage.getItem('email')
-      const profileImg = await AsyncStorage.getItem('profileImage')
 
       if (nickname) setNome(nickname)
       if (emailStorage) setEmail(emailStorage)
-      if (profileImg) setProfileImage(profileImg)
 
       // Busca estatísticas completas do backend
       if (nickname) {
@@ -70,13 +71,9 @@ const perfil = () => {
               setColecaoStats(data.colecao_stats)
             }
 
-            // Usar foto do backend se disponível, caso contrário usar local
+            // Atualizar foto de perfil se mudou no backend
             if (data.fotoperfil) {
-              setProfileImage(data.fotoperfil)
-              // Atualizar AsyncStorage com a foto do backend
-              await AsyncStorage.setItem('profileImage', data.fotoperfil)
-            } else if (profileImg) {
-              setProfileImage(profileImg)
+              await refreshProfileImage()
             }
 
           } else {
@@ -117,46 +114,33 @@ const perfil = () => {
       
       if (!result.canceled) {
         const imageUri = result.assets[0].uri
-        setProfileImage(imageUri)
-        await AsyncStorage.setItem('profileImage', imageUri)
         
-        // Fazer upload para o backend
+        // Usar o hook para atualizar a foto de perfil
         if (userData.nickname) {
           try {
             setUploadingPhoto(true)
             console.log('Iniciando upload da foto para:', userData.nickname)
             
-            const uploadResult = await apiService.uploadProfilePhoto(userData.nickname, imageUri)
+            const uploadResult = await updateProfileImage(imageUri)
             console.log('Resultado do upload:', uploadResult)
             
             if (uploadResult.success) {
               Alert.alert('Sucesso', 'Foto de perfil atualizada com sucesso!')
               
-              // Atualizar dados do usuário com a nova URL da foto
-              const novaFotoUrl = uploadResult.data.fotoperfil || uploadResult.data.foto_url
-              setUserData(prev => ({
-                ...prev,
-                fotoperfil: novaFotoUrl
-              }))
-              
-              // Atualizar também a imagem exibida
-              if (novaFotoUrl) {
-                setProfileImage(novaFotoUrl)
-                await AsyncStorage.setItem('profileImage', novaFotoUrl)
-              }
+              // Recarregar dados do perfil para pegar a nova foto
+              await carregarDadosPerfil()
             } else {
               console.error('Upload falhou:', uploadResult)
               Alert.alert('Erro', uploadResult.error || 'Erro ao atualizar foto de perfil')
             }
-          } catch (uploadError) {
-            console.error('Erro no upload:', uploadError)
-            Alert.alert('Erro', 'Erro ao fazer upload da foto. A foto foi salva localmente.')
+          } catch (error) {
+            console.error('Erro durante upload:', error)
+            Alert.alert('Erro', 'Erro inesperado ao atualizar foto de perfil')
           } finally {
             setUploadingPhoto(false)
           }
         } else {
-          console.warn('Nickname não disponível para upload')
-          Alert.alert('Aviso', 'Faça login para sincronizar a foto com o servidor.')
+          Alert.alert('Erro', 'Usuário não identificado. Faça login novamente.')
         }
       }
     } catch (error) {
