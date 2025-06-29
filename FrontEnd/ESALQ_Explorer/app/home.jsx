@@ -4,6 +4,8 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
 import { useRouter } from 'expo-router'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { cartas } from './carta/cartas' // ajuste o caminho se necessário
+import { useFocusEffect } from '@react-navigation/native'
 
 // Região aproximada da ESALQ para o mapa
 const ESALQ_REGION = {
@@ -43,15 +45,29 @@ const home = () => {
   const mapRef = useRef(null)
   const [nickname, setNickname] = useState('')
   const [profileImage, setProfileImage] = useState(null)
+  const [cartasNaoColetadas, setCartasNaoColetadas] = useState([])
 
-  useEffect(() => {
-    AsyncStorage.getItem('nickname').then(nome => {
-      if (nome) setNickname(nome)
-    })
-    AsyncStorage.getItem('profileImage').then(img => {
-      if (img) setProfileImage(img)
-    })
-  }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true
+      AsyncStorage.getItem('nickname').then(nome => {
+        if (nome && isActive) {
+          setNickname(nome)
+          AsyncStorage.getItem(`cartasColetadas_${nome}`).then(data => {
+            const coletadas = data ? JSON.parse(data) : []
+            const naoColetadas = cartas.filter(
+              c => c.latitude && c.longitude && !coletadas.includes(c.id)
+            )
+            setCartasNaoColetadas(naoColetadas)
+          })
+        }
+      })
+      AsyncStorage.getItem('profileImage').then(img => {
+        if (img && isActive) setProfileImage(img)
+      })
+      return () => { isActive = false }
+    }, [])
+  )
 
   useEffect(() => {
     const onBackPress = () => {
@@ -103,12 +119,23 @@ const home = () => {
         onRegionChangeComplete={handleRegionChange}
         customMapStyle={mapStyle} // Aplica o estilo do mapa
       >
-        {qrLocations.map((loc, idx) => (
+        {cartasNaoColetadas.map((carta, idx) => (
           <Marker
-            key={idx}
-            coordinate={loc}
-            title="QR Code aqui!"
-            description="Escaneie para ganhar uma carta."
+            key={carta.id}
+            coordinate={{
+              latitude: parseFloat(
+                typeof carta.latitude === 'string'
+                  ? carta.latitude.replace(',', '.')
+                  : carta.latitude
+              ),
+              longitude: parseFloat(
+                typeof carta.longitude === 'string'
+                  ? carta.longitude.replace(',', '.')
+                  : carta.longitude
+              ),
+            }}
+            title={carta.nome}
+            description="Escaneie para ganhar esta carta."
           >
             <Image
               source={require('../assets/local.png')}
@@ -157,7 +184,7 @@ const home = () => {
 
         <TouchableOpacity
           style={[styles.footerButton, styles.cameraButton]}
-          onPress={() => router.push('/camera_tela')}
+          onPress={() => router.push('/camera')}
         >
           <Image
             source={require('../assets/camera.png')}

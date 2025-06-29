@@ -1,10 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Image } from 'react-native'
 import { useLocalSearchParams } from 'expo-router'
 import { cartas } from './cartas'
 import React from 'react'
-
-const TOTAL_CARTAS = 30
-
 
 export default function CartaDetalhe() {
   const { id } = useLocalSearchParams()
@@ -18,19 +15,49 @@ export default function CartaDetalhe() {
     )
   }
 
+  // Seleciona o estilo da carta conforme o tipo
+  const getCartaStyle = tipo => {
+    switch (tipo) {
+      case 'rara':
+        return styles.cartaRara
+      case 'épica':
+        return styles.cartaEpica
+      case 'lendária':
+        return styles.cartaLendaria
+      default:
+        return styles.cartaComum
+    }
+  }
+
+  // Seleciona o estilo do tipo conforme o tipo
+  const getTipoStyle = tipo => {
+    switch (tipo) {
+      case 'rara':
+        return styles.tipoRara
+      case 'épica':
+        return styles.tipoEpica
+      case 'lendária':
+        return styles.tipoLendaria
+      default:
+        return styles.tipoComum
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <View style={[
-        styles.cartaDetalhe,
-        carta.tipo === 'rara' ? styles.cartaRara : styles.cartaComum
-      ]}>
+      <View style={[styles.cartaDetalhe, getCartaStyle(carta.tipo)]}>
+        {/* Exibe a imagem se existir */}
+        {carta.imagem && (
+          <Image
+            source={carta.imagem}
+            style={{ width: 120, height: 120, borderRadius: 12}}
+            resizeMode="cover"
+          />
+        )}
         <Text style={styles.numeroCarta}>{carta.id.toString().padStart(2, '0')}</Text>
         <Text style={styles.nomeCarta}>{carta.nome}</Text>
-        <Text style={[
-          styles.tipoCarta,
-          carta.tipo === 'rara' ? styles.tipoRara : styles.tipoComum
-        ]}>
-          {carta.tipo === 'rara' ? 'RARA' : 'COMUM'}
+        <Text style={[styles.tipoCarta, getTipoStyle(carta.tipo)]}>
+          {carta.tipo ? carta.tipo.toUpperCase() : ''}
         </Text>
         <Text style={styles.descricao}>{carta.descricao}</Text>
       </View>
@@ -47,8 +74,8 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   cartaDetalhe: {
-    width: 260,
-    height: 340,
+    width: 320,
+    height: 420,
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
@@ -57,13 +84,21 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     marginBottom: 20,
   },
+  cartaComum: {
+    backgroundColor: '#e0f2f1',
+    borderColor: '#2e7d32',
+  },
   cartaRara: {
     backgroundColor: '#fffbe6',
     borderColor: '#FFD700',
   },
-  cartaComum: {
-    backgroundColor: '#e0f2f1',
-    borderColor: '#2e7d32',
+  cartaEpica: {
+    backgroundColor: '#e0e7ff',
+    borderColor: '#7c3aed',
+  },
+  cartaLendaria: {
+    backgroundColor: '#fff0f6',
+    borderColor: '#ff1744',
   },
   numeroCarta: {
     fontSize: 48,
@@ -87,13 +122,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
   },
+  tipoComum: {
+    backgroundColor: '#b2dfdb',
+    color: '#2e7d32',
+  },
   tipoRara: {
     backgroundColor: '#FFD700',
     color: '#7c6500',
   },
-  tipoComum: {
-    backgroundColor: '#b2dfdb',
-    color: '#2e7d32',
+  tipoEpica: {
+    backgroundColor: '#7c3aed',
+    color: '#fff',
+  },
+  tipoLendaria: {
+    backgroundColor: '#ff1744',
+    color: '#fff',
   },
   descricao: {
     fontSize: 16,

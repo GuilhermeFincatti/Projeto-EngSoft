@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useRouter } from 'expo-router'
 
 const perfil = () => {
   const [nome, setNome] = useState('')
@@ -17,6 +18,7 @@ const perfil = () => {
     lendaria: 1,
   })
   const [missoes, setMissoes] = useState(7)
+  const router = useRouter()
 
   useEffect(() => {
     // Carrega nome e e-mail do AsyncStorage
@@ -37,6 +39,13 @@ const perfil = () => {
       setProfileImage(result.assets[0].uri)
       await AsyncStorage.setItem('profileImage', result.assets[0].uri)
     }
+  }
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('nickname')
+    await AsyncStorage.removeItem('email')
+    await AsyncStorage.removeItem('profileImage')
+    router.replace('/') // ou router.push('/') para voltar para a tela inicial
   }
 
   return (
@@ -83,6 +92,10 @@ const perfil = () => {
         <Text style={styles.sectionTitle}>Missões Completas</Text>
         <Text style={styles.missoesQtd}>{missoes}</Text>
       </View>
+
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutText}>Sair</Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -182,5 +195,18 @@ const styles = StyleSheet.create({
     color: '#2e7d32',
     fontFamily: 'Montserrat-Bold',
     marginTop: 8,
+  },
+  logoutButton: {
+    marginTop: 16,
+    backgroundColor: '#ff1744',
+    paddingVertical: 10,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  logoutText: {
+    color: '#fff',
+    fontSize: 18,
+    fontFamily: 'Montserrat-Bold',
   },
 })
