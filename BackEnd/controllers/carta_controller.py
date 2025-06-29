@@ -8,19 +8,23 @@ class CartaCreate(BaseModel):
     imagem: Optional[str] = None
     audio: Optional[str] = None
     localizacao: Optional[str] = None
+    descricao: Optional[str] = None
 
 class CartaUpdate(BaseModel):
     raridade: Optional[str] = None
     imagem: Optional[str] = None
     audio: Optional[str] = None
     localizacao: Optional[str] = None
+    descricao: Optional[str] = None
 
 class CartaResponse(BaseModel):
     qrcode: str
+    nome: Optional[str]
     raridade: Optional[str]
     imagem: Optional[str]
     audio: Optional[str]
     localizacao: Optional[str]
+    descricao: Optional[str]
 
 class CartaController:
     def __init__(self):

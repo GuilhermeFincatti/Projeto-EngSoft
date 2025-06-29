@@ -42,9 +42,12 @@ const RootLayout = () => {
         <Stack.Screen name="colecao" options={{ title: 'Coleção'}} />
         <Stack.Screen name="missoes" options={{ title: 'Missões'}} />
         <Stack.Screen name="perfil" options={{ title: 'Perfil'}} />
+        <Stack.Screen name="leaderboard" options={{ title: 'Ranking'}} />
+        <Stack.Screen name="amigos" options={{ title: 'Amigos'}} />
         <Stack.Screen name="carta/[id]" options={{ title: 'Carta'}} />
         <Stack.Screen name="carta/cartas" options={{title: 'json'}}/>
-        <Stack.Screen name="camera" options={{title: 'camera'}}/>
+        <Stack.Screen name="camera" options={{ title: 'Scanner QR', headerBackVisible: true }} />
+        <Stack.Screen name="test-qr" options={{ title: 'QR Codes de Teste', headerBackVisible: true }} />
       </Stack>
     </>
   )

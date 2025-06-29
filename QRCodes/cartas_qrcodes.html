@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Codes - ESALQ Explorer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .carta {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 3px solid;
+        }
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 15px auto;
+            display: block;
+        }
+        .nome {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #333;
+        }
+        .codigo {
+            font-size: 16px;
+            color: #666;
+            margin: 5px 0;
+        }
+        .raridade {
+            font-size: 14px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: white;
+            display: inline-block;
+            margin: 10px 0;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .titulo {
+            text-align: center;
+            color: #2e7d32;
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+        .instrucoes {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        @media print {
+            body { margin: 0; }
+            .instrucoes { display: none; }
+            .carta { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="titulo">🎴 QR Codes - ESALQ Explorer</h1>
+    
+    <div class="instrucoes">
+        <h3>📱 Como usar:</h3>
+        <p>1. Imprima esta página</p>
+        <p>2. Corte os QR codes</p>
+        <p>3. Cole-os em locais do campus</p>
+        <p>4. Use o app para escaneá-los e coletar as cartas!</p>
+    </div>
+    
+    <div class="container">
+
+        <div class="carta" style="border-color: #4CAF50;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR001" alt="QR Code QR001" class="qr-code">
+            <div class="nome">Carta do Sol</div>
+            <div class="codigo">QR001</div>
+            <div class="raridade" style="background-color: #4CAF50;">
+                comum
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #FFD700;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR002" alt="QR Code QR002" class="qr-code">
+            <div class="nome">Carta da Lua</div>
+            <div class="codigo">QR002</div>
+            <div class="raridade" style="background-color: #FFD700;">
+                rara
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #4CAF50;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR003" alt="QR Code QR003" class="qr-code">
+            <div class="nome">Carta de Mercúrio</div>
+            <div class="codigo">QR003</div>
+            <div class="raridade" style="background-color: #4CAF50;">
+                comum
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #FF9800;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR004" alt="QR Code QR004" class="qr-code">
+            <div class="nome">Carta de Vênus</div>
+            <div class="codigo">QR004</div>
+            <div class="raridade" style="background-color: #FF9800;">
+                incomum
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #FFD700;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR005" alt="QR Code QR005" class="qr-code">
+            <div class="nome">Carta da Terra</div>
+            <div class="codigo">QR005</div>
+            <div class="raridade" style="background-color: #FFD700;">
+                rara
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #FF9800;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR006" alt="QR Code QR006" class="qr-code">
+            <div class="nome">Carta de Marte</div>
+            <div class="codigo">QR006</div>
+            <div class="raridade" style="background-color: #FF9800;">
+                incomum
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #FF5722;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR007" alt="QR Code QR007" class="qr-code">
+            <div class="nome">Carta de Júpiter</div>
+            <div class="codigo">QR007</div>
+            <div class="raridade" style="background-color: #FF5722;">
+                lendária
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #FF5722;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR008" alt="QR Code QR008" class="qr-code">
+            <div class="nome">Carta de Saturno</div>
+            <div class="codigo">QR008</div>
+            <div class="raridade" style="background-color: #FF5722;">
+                lendária
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #9C27B0;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR009" alt="QR Code QR009" class="qr-code">
+            <div class="nome">Carta de Urano</div>
+            <div class="codigo">QR009</div>
+            <div class="raridade" style="background-color: #9C27B0;">
+                épica
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #9C27B0;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR010" alt="QR Code QR010" class="qr-code">
+            <div class="nome">Carta de Netuno</div>
+            <div class="codigo">QR010</div>
+            <div class="raridade" style="background-color: #9C27B0;">
+                épica
+            </div>
+        </div>
+        
+        <div class="carta" style="border-color: #FFD700;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QR011" alt="QR Code QR011" class="qr-code">
+            <div class="nome">Carta de Plutão</div>
+            <div class="codigo">QR011</div>
+            <div class="raridade" style="background-color: #FFD700;">
+                rara
+            </div>
+        </div>
+        <div class="carta" style="border-color: #FFD700;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=1" alt="QR Code 1" class="qr-code">
+            <div class="nome">Carta 1</div>
+            <div class="codigo">QR1</div>
+            <div class="raridade" style="background-color: #FFD700;">
+                rara
+            </div>
+        </div>
+
+    </div>
+    
+    <script>
+        // Auto-print quando a página carregar (opcional)
+        // window.onload = function() { window.print(); }
+    </script>
+</body>
+</html>
