@@ -66,9 +66,9 @@ const home = () => {
       return true // impede o comportamento padrão
     }
 
-    BackHandler.addEventListener('hardwareBackPress', onBackPress)
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress)
 
-    return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress)
+    return () => backHandler.remove()
   }, [])
 
   // Função para manter o usuário dentro da área da ESALQ
@@ -139,6 +139,25 @@ const home = () => {
         <Text style={styles.profileName}>{nickname || 'Seu Nome'}</Text>
       </TouchableOpacity>
 
+      {/* Botões laterais para novas funcionalidades */}
+      <View style={styles.sideButtonsContainer}>
+        <TouchableOpacity
+          style={styles.sideButton}
+          onPress={() => router.push('/leaderboard')}
+        >
+          <Text style={styles.sideButtonIcon}>🏆</Text>
+          <Text style={styles.sideButtonText}>Ranking</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.sideButton}
+          onPress={() => router.push('/amigos')}
+        >
+          <Text style={styles.sideButtonIcon}>👥</Text>
+          <Text style={styles.sideButtonText}>Amigos</Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Rodapé com botões, respeitando o safe area */}
       <View style={[
         styles.footerButtonPosition,
@@ -157,7 +176,7 @@ const home = () => {
 
         <TouchableOpacity
           style={[styles.footerButton, styles.cameraButton]}
-          onPress={() => router.push('/camera_tela')}
+          onPress={() => router.push('/camera')}
         >
           <Image
             source={require('../assets/camera.png')}
@@ -177,6 +196,14 @@ const home = () => {
           <Text style={styles.footerText}>Missões</Text>
         </TouchableOpacity>
       </View>
+      
+      {/* Botão de teste QR - apenas para desenvolvimento */}
+      <TouchableOpacity
+        style={styles.testQRButton}
+        onPress={() => router.push('/test-qr')}
+      >
+        <Text style={styles.testQRText}>🧪</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   )
 }
@@ -212,6 +239,35 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#2e7d32',
+  },
+  sideButtonsContainer: {
+    position: 'absolute',
+    right: 16,
+    top: '50%',
+    transform: [{ translateY: -60 }],
+  },
+  sideButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 25,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  sideButtonIcon: {
+    fontSize: 20,
+  },
+  sideButtonText: {
+    fontSize: 8,
+    color: '#333',
+    fontWeight: '600',
+    marginTop: 2,
   },
   footerButtonPosition: {
     position: 'absolute',
@@ -263,5 +319,28 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#2e7d32',
     fontWeight: '600',
+  },
+  testQRButton: {
+    position: 'absolute',
+    top: 120,
+    right: 20,
+    backgroundColor: '#FF9800',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  testQRText: {
+    color: '#fff',
+    fontSize: 16,
   },
 })

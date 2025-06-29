@@ -4,21 +4,21 @@ from datetime import datetime
 from models.missao_model import MissaoModel
 
 class MissaoCreate(BaseModel):
-    datafim: Optional[datetime] = None
-    tipo: str
-    educador: str
+    DataFim: Optional[datetime] = None
+    Tipo: str
+    Educador: str
 
 class MissaoUpdate(BaseModel):
-    datafim: Optional[datetime] = None
-    tipo: Optional[str] = None
-    educador: Optional[str] = None
+    DataFim: Optional[datetime] = None
+    Tipo: Optional[str] = None
+    Educador: Optional[str] = None
 
 class MissaoResponse(BaseModel):
-    codigo: int
-    datainicio: datetime
-    datafim: Optional[datetime]
-    tipo: str
-    educador: str
+    Codigo: int
+    DataInicio: datetime
+    DataFim: Optional[datetime]
+    Tipo: str
+    Educador: str
 
 class MissaoController:
     def __init__(self):
