@@ -58,7 +58,9 @@ class ColecaoModel:
                              imagem,
                              audio,
                              localizacao,
-                             descricao
+                             descricao,
+                             latitude,
+                             longitude
                          )
                      """)
                      .eq("usuario", usuario)
@@ -89,6 +91,14 @@ class ColecaoModel:
                     if item.get("carta"):
                         qrcode = item["carta"]["qrcode"]
                         item["carta"]["nome"] = cartas_nomes.get(qrcode, f"Carta {qrcode}")
+                        
+                        # Adicionar coordenadas se disponíveis
+                        carta = item["carta"]
+                        if carta.get("latitude") is not None and carta.get("longitude") is not None:
+                            carta["coordinates"] = {
+                                "latitude": float(carta["latitude"]),
+                                "longitude": float(carta["longitude"])
+                            }
             
             return {"success": True, "data": result.data}
         except Exception as e:

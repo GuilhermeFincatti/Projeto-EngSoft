@@ -42,26 +42,13 @@ class UsuarioModel:
         except Exception as e:
             return {"success": False, "error": str(e)}
     
-    def find_by_email(self, email: str) -> Dict[str, Any]:
-        """Buscar pessoa por email"""
-        try:
-            result = self.db.table("usuario").select("*").eq("email", email).single().execute()
-            
-            if not result.data:
-                return {"success": False, "error": "Pessoa não encontrada"}
-            
-            return {"success": True, "data": result.data}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+    # NOTA: Método removido pois a tabela 'usuario' não possui coluna 'email'
+    # Use PessoaModel.find_by_email() ao invés deste método
+    # def find_by_email(self, email: str) -> Dict[str, Any]:
     
-    def find_by_tipo(self, tipo: str) -> Dict[str, Any]:
-        """Buscar pessoas por tipo"""
-        try:
-            result = self.db.table("usuario").select("*").eq("tipo", tipo).execute()
-            
-            return {"success": True, "data": result.data}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+    # NOTA: Método removido pois a tabela 'usuario' não possui coluna 'tipo'  
+    # Use PessoaModel.find_by_tipo() ao invés deste método
+    # def find_by_tipo(self, tipo: str) -> Dict[str, Any]:
     
     def update(self, nickname: str, update_data: Dict[str, Any]) -> Dict[str, Any]:
         """Atualizar pessoa"""

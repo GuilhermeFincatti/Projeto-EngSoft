@@ -174,3 +174,52 @@ class MensagemController:
             result["status_code"] = 400
         
         return result
+    
+    def get_chat_messages(self, usuario1: str, usuario2: str) -> Dict[str, Any]:
+        """Buscar mensagens do chat entre dois usuários"""
+        return self.model.get_chat_messages(usuario1, usuario2)
+    
+    def send_message(self, remetente: str, destinatario: str, texto: str, 
+                    tipo: str = "texto", carta: str = None) -> Dict[str, Any]:
+        """Enviar mensagem"""
+        return self.model.send_message(remetente, destinatario, texto, tipo, carta)
+    
+    def get_user_chats(self, usuario: str) -> Dict[str, Any]:
+        """Buscar lista de chats do usuário"""
+        return self.model.get_user_chats(usuario)
+    
+    def send_card_message(self, remetente: str, destinatario: str, qrcode: str) -> Dict[str, Any]:
+        """Enviar uma carta como mensagem"""
+        try:
+            # Verificar se o usuário possui a carta
+            coleta_check = (self.model.db.table("coleta")
+                          .select("quantidade")
+                          .eq("usuario", remetente)
+                          .eq("qrcode", qrcode)
+                          .execute())
+            
+            if not coleta_check.data or coleta_check.data[0]["quantidade"] < 1:
+                return {"success": False, "error": "Você não possui esta carta"}
+            
+            # Buscar informações da carta
+            carta_info = (self.model.db.table("carta")
+                         .select("*")
+                         .eq("qrcode", qrcode)
+                         .single()
+                         .execute())
+            
+            if not carta_info.data:
+                return {"success": False, "error": "Carta não encontrada"}
+            
+            carta = carta_info.data
+            texto = f"🎴 Compartilhou a carta: {carta.get('nome', qrcode)}"
+            
+            return self.model.send_message(
+                remetente=remetente,
+                destinatario=destinatario,
+                texto=texto,
+                tipo="carta",
+                carta=qrcode
+            )
+        except Exception as e:
+            return {"success": False, "error": str(e)}

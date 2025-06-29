@@ -48,6 +48,15 @@ class AmizadeController:
     def enviar_solicitacao(self, solicitante: str, solicitacao_data: SolicitacaoAmizadeRequest) -> Dict[str, Any]:
         """Enviar solicitação de amizade"""
         try:
+            # Verificar se solicitante existe na tabela usuario
+            solicitante_result = self.usuario_model.find_by_nickname(solicitante)
+            if not solicitante_result["success"]:
+                return {
+                    "success": False,
+                    "error": "Usuário solicitante não encontrado na tabela de usuários",
+                    "status_code": 404
+                }
+            
             # Verificar se destinatário existe
             destinatario_result = self.usuario_model.find_by_nickname(solicitacao_data.destinatario)
             if not destinatario_result["success"]:

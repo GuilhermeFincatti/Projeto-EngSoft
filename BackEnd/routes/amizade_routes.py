@@ -41,6 +41,7 @@ def enviar_solicitacao(
         )
     
     solicitante_nickname = nickname_result["data"]
+    print(f"Solicitante: {solicitante_nickname} - Destinatário: {solicitacao_data.destinatario}")
     result = controller.enviar_solicitacao(solicitante_nickname, solicitacao_data)
     
     if not result["success"]:

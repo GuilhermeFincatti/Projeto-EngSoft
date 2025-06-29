@@ -8,13 +8,21 @@ class AmizadeModel:
     def enviar_solicitacao(self, solicitante: str, destinatario: str) -> Dict[str, Any]:
         """Enviar solicitação de amizade"""
         try:
-            # Verificar se já existe solicitação ou amizade
-            existing = self.db.table("amizade").select("*").or_(
-                f"and(solicitante.eq.{solicitante},destinatario.eq.{destinatario})",
-                f"and(solicitante.eq.{destinatario},destinatario.eq.{solicitante})"
-            ).execute()
+            # Verificar se ambos os usuários existem
+            solicitante_exists = self.db.table("usuario").select("nickname").eq("nickname", solicitante).execute()
+            destinatario_exists = self.db.table("usuario").select("nickname").eq("nickname", destinatario).execute()
             
-            if existing.data:
+            if not solicitante_exists.data:
+                return {"success": False, "error": f"Usuário solicitante '{solicitante}' não encontrado"}
+            
+            if not destinatario_exists.data:
+                return {"success": False, "error": f"Usuário destinatário '{destinatario}' não encontrado"}
+            
+            # Verificar se já existe solicitação ou amizade (duas consultas separadas)
+            existing1 = self.db.table("amizade").select("*").eq("solicitante", solicitante).eq("destinatario", destinatario).execute()
+            existing2 = self.db.table("amizade").select("*").eq("solicitante", destinatario).eq("destinatario", solicitante).execute()
+            
+            if existing1.data or existing2.data:
                 return {"success": False, "error": "Já existe uma solicitação ou amizade entre estes usuários"}
             
             # Criar nova solicitação
@@ -64,13 +72,12 @@ class AmizadeModel:
     def remover_amizade(self, usuario1: str, usuario2: str) -> Dict[str, Any]:
         """Remover amizade"""
         try:
-            result = self.db.table("amizade").delete().or_(
-                f"and(solicitante.eq.{usuario1},destinatario.eq.{usuario2})",
-                f"and(solicitante.eq.{usuario2},destinatario.eq.{usuario1})"
-            ).execute()
+            # Tentar remover em ambas as direções
+            result1 = self.db.table("amizade").delete().eq("solicitante", usuario1).eq("destinatario", usuario2).execute()
+            result2 = self.db.table("amizade").delete().eq("solicitante", usuario2).eq("destinatario", usuario1).execute()
             
-            if hasattr(result, 'error') and result.error:
-                raise Exception(f"Erro ao remover amizade: {result.error}")
+            if (hasattr(result1, 'error') and result1.error) or (hasattr(result2, 'error') and result2.error):
+                raise Exception(f"Erro ao remover amizade")
             
             return {"success": True, "message": "Amizade removida com sucesso"}
         except Exception as e:
@@ -157,18 +164,21 @@ class AmizadeModel:
     def verificar_status_amizade(self, usuario1: str, usuario2: str) -> Dict[str, Any]:
         """Verificar status de amizade entre dois usuários"""
         try:
-            result = self.db.table("amizade").select("*").or_(
-                f"and(solicitante.eq.{usuario1},destinatario.eq.{usuario2})",
-                f"and(solicitante.eq.{usuario2},destinatario.eq.{usuario1})"
-            ).execute()
+            # Verificar em ambas as direções
+            result1 = self.db.table("amizade").select("*").eq("solicitante", usuario1).eq("destinatario", usuario2).execute()
+            result2 = self.db.table("amizade").select("*").eq("solicitante", usuario2).eq("destinatario", usuario1).execute()
             
-            if hasattr(result, 'error') and result.error:
-                raise Exception(f"Erro ao verificar amizade: {result.error}")
+            if hasattr(result1, 'error') and result1.error:
+                raise Exception(f"Erro ao verificar amizade: {result1.error}")
+            if hasattr(result2, 'error') and result2.error:
+                raise Exception(f"Erro ao verificar amizade: {result2.error}")
             
-            if not result.data:
+            # Se não encontrou nada em nenhuma direção
+            if not result1.data and not result2.data:
                 return {"success": True, "data": {"status": "nenhum"}}
             
-            amizade = result.data[0]
+            # Retornar o primeiro resultado encontrado
+            amizade = result1.data[0] if result1.data else result2.data[0]
             return {"success": True, "data": {
                 "id": amizade["id"],
                 "status": amizade["status"],

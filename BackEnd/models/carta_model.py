@@ -20,7 +20,7 @@ class CartaModel:
     def find_by_qrcode(self, qrcode: str) -> Dict[str, Any]:
         """Buscar carta por QRCode"""
         try:
-            result = self.db.table("carta").select("*").eq("qrcode", qrcode).single().execute()
+            result = self.db.table("carta").select("*, latitude, longitude").eq("qrcode", qrcode).single().execute()
             
             if not result.data:
                 return {"success": False, "error": "Carta não encontrada"}
@@ -47,6 +47,13 @@ class CartaModel:
             
             result.data["nome"] = cartas_nomes.get(qrcode, f"Carta {qrcode}")
             
+            # Adicionar coordenadas se disponíveis
+            if result.data.get("latitude") is not None and result.data.get("longitude") is not None:
+                result.data["coordinates"] = {
+                    "latitude": float(result.data["latitude"]),
+                    "longitude": float(result.data["longitude"])
+                }
+            
             return {"success": True, "data": result.data}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -54,7 +61,7 @@ class CartaModel:
     def find_all(self, limit: Optional[int] = None) -> Dict[str, Any]:
         """Buscar todas as cartas"""
         try:
-            query = self.db.table("carta").select("*")
+            query = self.db.table("carta").select("*, latitude, longitude")
             if limit:
                 query = query.limit(limit)
             
@@ -84,6 +91,13 @@ class CartaModel:
                 for carta in result.data:
                     qrcode = carta["qrcode"]
                     carta["nome"] = cartas_nomes.get(qrcode, f"Carta {qrcode}")
+                    
+                    # Adicionar coordenadas se disponíveis
+                    if carta.get("latitude") is not None and carta.get("longitude") is not None:
+                        carta["coordinates"] = {
+                            "latitude": float(carta["latitude"]),
+                            "longitude": float(carta["longitude"])
+                        }
             
             return {"success": True, "data": result.data}
         except Exception as e:
