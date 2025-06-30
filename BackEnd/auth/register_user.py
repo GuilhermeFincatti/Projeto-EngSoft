@@ -18,7 +18,7 @@ def register_user(nickname: str, email: str, password: str, tipo: str = "usuario
         raise Exception(f"Erro ao inserir na tabela Pessoa")
 
     # Se o tipo for "usuario", criar registro na tabela usuario
-    if tipo.lower() == "usuario":
+    if tipo.lower() == "explorador" or tipo.lower() == "usuario":
         print("→ Inserindo na tabela Usuario")
         
         usuario_data = {

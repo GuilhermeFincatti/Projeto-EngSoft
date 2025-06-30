@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { apiService } from '../services/api'
@@ -185,7 +185,7 @@ const perfil = () => {
   const cartasStats = getCartasPorRaridade()
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <TouchableOpacity 
         onPress={pickImage} 
         style={styles.profileImageContainer}
@@ -249,7 +249,7 @@ const perfil = () => {
         <Text style={styles.sectionTitle}>Missões Completas</Text>
         <Text style={styles.missoesQtd}>{missoes}</Text>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -259,9 +259,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#e0f2f1',
+  },
+  contentContainer: {
     alignItems: 'center',
     paddingTop: 40,
     paddingHorizontal: 20,
+    paddingBottom: 30,
   },
   profileImageContainer: {
     alignItems: 'center',

@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   numeroCartaColetada: {
-    color: '#fff',
+    color: '#333',
   },
   statusCarta: {
     fontSize: 12,
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   statusCartaColetada: {
-    color: '#fff',
+    color: '#333',
     fontWeight: 'bold',
   },
   imagemCarta: {
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   nomeCartaColetada: {
-    color: '#fff',
+    color: '#333',
     fontWeight: 'bold',
   },
   testButtons: {
